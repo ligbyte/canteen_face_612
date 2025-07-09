@@ -32,6 +32,9 @@ import com.stkj.common.utils.ActivityUtils;
 import com.stkj.common.utils.AndroidUtils;
 import com.stkj.common.utils.KeyBoardUtils;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -307,6 +310,7 @@ public class MainActivity extends ImmerseActivity implements AppNetCallback {
             AndroidUtils.killApp(this);
         }
     }
+
 
     @Override
     protected void onDestroy() {

@@ -32,11 +32,13 @@ import com.stkj.cashier.base.net.AppNetManager;
 import com.stkj.cashier.base.permission.AppPermissionHelper;
 import com.stkj.cashier.base.tts.TTSVoiceHelper;
 import com.stkj.cashier.base.ui.dialog.CommonAlertDialogFragment;
+import com.stkj.cashier.base.ui.dialog.CommonBindAlertDialogFragment;
 import com.stkj.cashier.base.ui.dialog.CommonInputDialogFragment;
 import com.stkj.cashier.base.ui.dialog.CommonSelectDialogFragment;
 import com.stkj.cashier.base.ui.dialog.FaceChooseDialogFragment;
 import com.stkj.cashier.base.ui.dialog.OrderAlertDialogFragment;
 import com.stkj.cashier.base.utils.CommonDialogUtils;
+import com.stkj.cashier.base.utils.MD5Utils;
 import com.stkj.cashier.consumer.ConsumerManager;
 import com.stkj.cashier.consumer.callback.ConsumerListener;
 import com.stkj.cashier.home.helper.CBGCameraHelper;
@@ -51,6 +53,7 @@ import com.stkj.cashier.home.ui.widget.HomeTabLayout;
 import com.stkj.cashier.home.ui.widget.HomeTitleLayout;
 import com.stkj.cashier.pay.data.PayConstants;
 import com.stkj.cashier.pay.helper.ConsumerModeHelper;
+import com.stkj.cashier.pay.model.BindFragmentSwitchEvent;
 import com.stkj.cashier.pay.model.FindViewResumeEvent;
 import com.stkj.cashier.pay.model.TTSSpeakEvent;
 import com.stkj.cashier.setting.data.ServerSettingMMKV;
@@ -102,7 +105,7 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
     private static final String TAB_CURRENT_PAGE = "currentTabPage";
     private View scanHolderView;
     private ViewPager2 vp2Content;
-    private FrameLayout flScreenProtect;
+    private FrameLayout flScreenWelcom;
     private HomeTabPageAdapter homeTabPageAdapter;
     //是否需要重新恢复消费者页面
     private boolean needRestartConsumer;
@@ -118,6 +121,9 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
         super.onCreate(savedInstanceState);
 
         EventBus.getDefault().register(this);
+
+        Log.d(TAG, "limeMD5Utils: " + MD5Utils.encrypt("ly0379"));
+
 //        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 //
 //        Runnable task = new Runnable() {
@@ -239,9 +245,9 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
             @Override
             public void onInitError(String msg) {
                 hideLoadingDialog();
-                CommonDialogUtils.showTipsDialog(MainActivity.this, msg, "知道了", new CommonAlertDialogFragment.OnSweetClickListener() {
+                CommonDialogUtils.showTipsBindDialog(MainActivity.this, "提示",msg, "知道了", new CommonBindAlertDialogFragment.OnSweetClickListener() {
                     @Override
-                    public void onClick(CommonAlertDialogFragment alertDialogFragment) {
+                    public void onClick(CommonBindAlertDialogFragment alertDialogFragment) {
                         initData();
                     }
                 });
@@ -277,6 +283,10 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
                         });
                     }
                 });
+
+        vp2Content.setVisibility(View.GONE);
+        flScreenWelcom.setVisibility(View.VISIBLE);
+
     }
 
     /**
@@ -296,15 +306,15 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
     private void findViews() {
         scanHolderView = findViewById(R.id.scan_holder_view);
 
-        flScreenProtect = findViewById(R.id.fl_screen_protect);
-        flScreenProtect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                flScreenProtect.setVisibility(View.GONE);
-                ScreenProtectHelper screenProtectHelper = getWeakRefHolder(ScreenProtectHelper.class);
-                screenProtectHelper.startScreenProtect();
-            }
-        });
+        flScreenWelcom = findViewById(R.id.fl_screen_welcom);
+//        flScreenProtect.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                flScreenProtect.setVisibility(View.GONE);
+//                ScreenProtectHelper screenProtectHelper = getWeakRefHolder(ScreenProtectHelper.class);
+//                screenProtectHelper.startScreenProtect();
+//            }
+//        });
         findViewById(R.id.iv_logo).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -557,16 +567,16 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
         TTSVoiceHelper ttsVoiceHelper = getWeakRefHolder(TTSVoiceHelper.class);
         ttsVoiceHelper.initTTSVoice(null);
         //屏幕保护程序
-        ScreenProtectHelper screenProtectHelper = getWeakRefHolder(ScreenProtectHelper.class);
-        screenProtectHelper.setOnScreenProtectListener(new ScreenProtectHelper.OnScreenProtectListener() {
-            @Override
-            public void onNeedScreenProtect() {
-                if (!isSoftKeyboardShow) {
-                    flScreenProtect.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-        countDownHelper.addCountDownListener(screenProtectHelper);
+//        ScreenProtectHelper screenProtectHelper = getWeakRefHolder(ScreenProtectHelper.class);
+//        screenProtectHelper.setOnScreenProtectListener(new ScreenProtectHelper.OnScreenProtectListener() {
+//            @Override
+//            public void onNeedScreenProtect() {
+//                if (!isSoftKeyboardShow) {
+//                    flScreenProtect.setVisibility(View.VISIBLE);
+//                }
+//            }
+//        });
+//        countDownHelper.addCountDownListener(screenProtectHelper);
         //网络状态回调
         SystemEventWatcherHelper systemEventWatcherHelper = getWeakRefHolder(SystemEventWatcherHelper.class);
         countDownHelper.addCountDownListener(systemEventWatcherHelper);
@@ -608,14 +618,20 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
     @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
-        long currentTime = System.currentTimeMillis();
-        if ((currentTime - lastBackClickTime) > 2000) {
-            AppToast.toastMsg("再按一次退出程序");
-            lastBackClickTime = currentTime;
-        } else {
-            //杀掉进程
-            DeviceManager.INSTANCE.getDeviceInterface().release();
-            AndroidUtils.killApp(this);
+
+        if (vp2Content.getCurrentItem() == 0) {
+
+            long currentTime = System.currentTimeMillis();
+            if ((currentTime - lastBackClickTime) > 2000) {
+                AppToast.toastMsg("再按一次退出程序");
+                lastBackClickTime = currentTime;
+            } else {
+                //杀掉进程
+                DeviceManager.INSTANCE.getDeviceInterface().release();
+                AndroidUtils.killApp(this);
+            }
+        }else {
+            EventBus.getDefault().post(new BindFragmentSwitchEvent(0));
         }
     }
 
@@ -684,6 +700,23 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
         }
         return null;
     }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBindFragmentSwitchEvent(BindFragmentSwitchEvent eventBus) {
+        Log.d(TAG, "limeonBindFragmentSwitchEvent 700 eventBus: " + eventBus.getPosition());
+        vp2Content.setCurrentItem(eventBus.getPosition(), false);
+        if (eventBus.getPosition() == 0){
+            flScreenWelcom.setVisibility(View.VISIBLE);
+            vp2Content.setVisibility(View.GONE);
+        }else {
+            flScreenWelcom.setVisibility(View.GONE);
+            vp2Content.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTTSSpeakEvent(TTSSpeakEvent eventBus) {

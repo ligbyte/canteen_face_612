@@ -11,7 +11,7 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- background color-->
         <item name="android:windowBackground">@color/white</item>
-        <item name="android:navigationBarColor">#D7EBFE</item>
+        <item name="android:navigationBarColor">#0b1227</item>
     </style>
 
     <!-- 透明主题-->

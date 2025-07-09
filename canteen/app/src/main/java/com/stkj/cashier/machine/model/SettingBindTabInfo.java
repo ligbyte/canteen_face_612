@@ -1,23 +1,16 @@
-package com.stkj.cashier.setting.model;
+package com.stkj.cashier.machine.model;
 
-public class SettingTabInfo {
+public class SettingBindTabInfo {
 
     public static final int TAB_TYPE_SERVER_ADDRESS = 1;
-    public static final String TAB_NAME_SERVER_ADDRESS = "服务器地址";
+    public static final String TAB_NAME_SERVER_ADDRESS = "人脸管理";
     public static final int TAB_TYPE_DEVICE_SETTING = 2;
-    public static final String TAB_NAME_DEVICE_SETTING = "本机设置";
+    public static final String TAB_NAME_DEVICE_SETTING = "设备ID";
     public static final int TAB_TYPE_WIFI_CONNECT = 3;
-    public static final String TAB_NAME_WIFI_CONNECT = "wifi连接";
+    public static final String TAB_NAME_WIFI_CONNECT = "应用设置";
     public static final int TAB_TYPE_PAYMENT_SETTING = 4;
-    public static final String TAB_NAME_PAYMENT_SETTING = "消费设置";
-    public static final int TAB_TYPE_GOODS_SETTINGS = 5;
-    public static final String TAB_NAME_GOODS_SETTINGS = "商品设置";
-    public static final int TAB_TYPE_VOICE_SETTING = 6;
-    public static final String TAB_NAME_VOICE_SETTING = "语音设置";
-    public static final int TAB_TYPE_FACE_PASS = 7;
-    public static final String TAB_NAME_FACE_PASS = "人脸识别";
-    public static final int TAB_TYPE_RESTART_APP = 8;
-    public static final String TAB_NAME_RESTART_APP = "重启软件";
+    public static final String TAB_NAME_PAYMENT_SETTING = "用餐设置";
+
 
 
 
@@ -42,10 +35,16 @@ public class SettingTabInfo {
         this.tabType = tabType;
     }
 
-    public SettingTabInfo() {
+    public SettingBindTabInfo() {
     }
 
-    public SettingTabInfo(String tabName, int tabType) {
+    public SettingBindTabInfo(String tabName, int tabType, int tabImage) {
+        this.tabName = tabName;
+        this.tabType = tabType;
+        this.tabImage = tabImage;
+    }
+
+    public SettingBindTabInfo(String tabName, int tabType) {
         this.tabName = tabName;
         this.tabType = tabType;
     }

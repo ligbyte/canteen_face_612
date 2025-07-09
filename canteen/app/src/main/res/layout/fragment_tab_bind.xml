@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_F6F9FC"
+    android:background="@null"
     android:orientation="vertical">
 
     <com.stkj.cashier.home.ui.widget.HomeTitleLayout
         android:id="@+id/htl_consumer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/color_0087FA"
+        android:background="@null"
         app:htl_consume_lay_res="1"
         app:isLightMode="true" />
 
@@ -322,7 +322,7 @@
             android:layout_marginTop="@dimen/dp_5"
             android:layout_marginBottom="@dimen/dp_5"
             app:radiusT="@dimen/dp_5"
-            app:solidColorT="@color/white">
+            app:solidColorT="@null">
 
             <!-- 人脸相关布局 -->
             <LinearLayout

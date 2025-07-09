@@ -4,7 +4,9 @@ import android.content.Context;
 
 import com.stkj.cashier.base.device.DeviceManager;
 import com.stkj.cashier.base.net.AppNetManager;
+import com.stkj.cashier.base.ui.dialog.BindingPwdAlertDialogFragment;
 import com.stkj.cashier.base.ui.dialog.CommonAlertDialogFragment;
+import com.stkj.cashier.base.ui.dialog.CommonBindAlertDialogFragment;
 import com.stkj.cashier.login.helper.LoginHelper;
 import com.stkj.cashier.setting.helper.FacePassHelper;
 import com.stkj.common.core.ActivityHolderFactory;
@@ -19,9 +21,27 @@ public class CommonDialogUtils {
                 .show(context);
     }
 
+    public static void showBindTipsDialog(Context context, String title, BindingPwdAlertDialogFragment.OnSweetClickListener confirmClickListener) {
+        BindingPwdAlertDialogFragment.build()
+                .setAlertTitleTxt(title)
+                .setRightNavTxt("取消")
+                .setLeftNavClickListener(confirmClickListener)
+                .show(context);
+    }
+
+
     public static void showTipsDialog(Context context, String msg, String confirmText, CommonAlertDialogFragment.OnSweetClickListener confirmClickListener) {
         CommonAlertDialogFragment.build()
                 .setAlertTitleTxt("提示")
+                .setAlertContentTxt(msg)
+                .setLeftNavTxt(confirmText)
+                .setLeftNavClickListener(confirmClickListener)
+                .show(context);
+    }
+
+    public static void showTipsBindDialog(Context context, String title,String msg, String confirmText, CommonBindAlertDialogFragment.OnSweetClickListener confirmClickListener) {
+        CommonBindAlertDialogFragment.build()
+                .setAlertTitleTxt(title)
                 .setAlertContentTxt(msg)
                 .setLeftNavTxt(confirmText)
                 .setLeftNavClickListener(confirmClickListener)

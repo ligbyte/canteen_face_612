@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentActivity;
 import com.stkj.cashier.home.model.HomeMenuList;
 import com.stkj.cashier.home.model.HomeTabInfo;
 import com.stkj.cashier.machine.bind.TabBindFragment;
+import com.stkj.cashier.machine.bind.TabBindSettingFragment;
 import com.stkj.cashier.pay.data.PayConstants;
 import com.stkj.cashier.pay.helper.ConsumerModeHelper;
 import com.stkj.cashier.pay.model.ConsumerOrderRefreshEvent;
@@ -30,6 +31,7 @@ import java.util.List;
  */
 public class HomeTabPageAdapter extends CommonFragmentPageAdapter {
 
+    public final static String TAG = "HomeTabPageAdapter";
     public static final String TAB_BINDING_TAG = "tab_binding_tag";
     public static final String TAB_PAYMENT_TAG = "cashier";
     public static final String TAB_STAT_TAG = "stat";
@@ -45,13 +47,19 @@ public class HomeTabPageAdapter extends CommonFragmentPageAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
+        Log.d(TAG, "limeonPageSelected 50: ");
         HomeTabInfo<HomeMenuList.Menu> homeTabInfo = homeTabInfoList.get(position);
+        Log.d(TAG, "limeonPageSelected 52: ");
         HomeMenuList.Menu extraInfo = homeTabInfo.getExtraInfo();
+        Log.d(TAG, "limeonPageSelected 54: ");
         String path = extraInfo.getPath();
+        Log.d(TAG, "limeonPageSelected 56: ");
         if (TextUtils.equals(path, TAB_BINDING_TAG)) {
+            Log.d(TAG, "limeonPageSelected 58: ");
             return new TabBindFragment();
         } else {
-            return new TabSettingFragment();
+            Log.d(TAG, "limeonPageSelected 60: ");
+            return new TabBindSettingFragment();
         }
     }
 
