@@ -264,7 +264,7 @@ public class FacePassHelper extends ActivityWeakRefHolder {
                                     }
                                 }
                             }
-                            emitter.onNext(200);
+                            emitter.onNext(10000);
                         } catch (Throwable e) {
                             e.printStackTrace();
                             emitter.onError(e);
@@ -424,7 +424,7 @@ public class FacePassHelper extends ActivityWeakRefHolder {
                 .subscribe(new DefaultObserver<BaseNetResponse<FacePassPeopleListInfo>>() {
                     @Override
                     protected void onSuccess(BaseNetResponse<FacePassPeopleListInfo> baseNetResponse) {
-                        Log.d(TAG, "limerequestFacePass: " + JSON.toJSONString(baseNetResponse));
+                        Log.d(TAG, "limerequestFacePass=======: " + JSON.toJSONString(baseNetResponse));
                         FacePassPeopleListInfo responseData = baseNetResponse.getData();
                         if (responseData != null && responseData.getResults() != null && !responseData.getResults().isEmpty()) {
                             List<FacePassPeopleInfo> passPeopleInfoList = responseData.getResults();
@@ -468,12 +468,13 @@ public class FacePassHelper extends ActivityWeakRefHolder {
                     @Override
                     public ObservableSource<AddLocalFacePassInfoWrapper> apply(AddLocalFacePassInfoWrapper facePassInfoWrapper) throws Throwable {
                         FacePassPeopleInfo facePassItemInfo = facePassInfoWrapper.getFacePassPeopleInfo();
+                        Log.d(TAG, "limefacePassItemInfo: " + JSON.toJSONString(facePassItemInfo));
                         String localAddFaceToken = null;
                         String cardNumber = facePassItemInfo.getCard_Number();
                         try {
                             //判断卡状态
                             if (facePassItemInfo.getCard_state() == 64) {
-                                LogHelper.print("-facePassHelper-handleFacePassInfo--cardNumber: " + cardNumber + " Card_state() == 64");
+                                LogHelper.print("limeaddFacePassToLocal -facePassHelper-handleFacePassInfo--cardNumber: " + cardNumber + " Card_state() == 64");
                                 //移除本地人脸item 信息
                                 FacePassPeopleInfoDao facePassPeopleInfoDao = daoSession.getFacePassPeopleInfoDao();
                                 FacePassPeopleInfo localPeopleInfo =
@@ -481,7 +482,7 @@ public class FacePassHelper extends ActivityWeakRefHolder {
                                                 .where(FacePassPeopleInfoDao.Properties.Unique_number.eq(facePassItemInfo.getUnique_number()))
                                                 .unique();
                                 if (localPeopleInfo != null) {
-                                    LogHelper.print("-facePassHelper-handleFacePassInfo--cardNumber: " + cardNumber + " Card_state() == 64 delete local face");
+                                    LogHelper.print("limeaddFacePassToLocal -facePassHelper-handleFacePassInfo--cardNumber: " + cardNumber + " Card_state() == 64 delete local face");
                                     //删除移除本地人脸状态为64
                                     facePassPeopleInfoDao.delete(localPeopleInfo);
                                     //获取本地数据库数量
@@ -504,7 +505,7 @@ public class FacePassHelper extends ActivityWeakRefHolder {
                                     });
                                     facePassInfoWrapper.setStatus(AddLocalFacePassInfoWrapper.STATE_FORBID);
                                 } else {
-                                    LogHelper.print("-facePassHelper-handleFacePassInfo--cardNumber: " + cardNumber + " Card_state() == 64 no local face");
+                                    LogHelper.print("limeaddFacePassToLocal -facePassHelper-handleFacePassInfo--cardNumber: " + cardNumber + " Card_state() == 64 no local face");
                                     facePassInfoWrapper.setStatus(AddLocalFacePassInfoWrapper.STATE_ERROR);
                                 }
                                 facePassInfoWrapper.setStatusMsg("卡状态为64");
@@ -519,7 +520,7 @@ public class FacePassHelper extends ActivityWeakRefHolder {
                             int bindFaceGroupResult = -1;
                             if (cbgFacePassHandHelper != null) {
                                 String imageData = facePassItemInfo.getImgData();
-                                LogHelper.print("-facePassHelper-handleFacePassInfo--cardNumber: " + cardNumber + " imageData: " + imageData);
+                                LogHelper.print("limeaddFacePassToLocal -facePassHelper-handleFacePassInfo--cardNumber: " + cardNumber + " imageData: " + imageData);
                                 Bitmap bitmap = null;
                                 try {
                                     FutureTarget<Bitmap> futureTarget = GlideApp.with(AppManager.INSTANCE.getApplication())
@@ -529,12 +530,12 @@ public class FacePassHelper extends ActivityWeakRefHolder {
                                             .submit();
                                     bitmap = futureTarget.get();
                                 } catch (Throwable e) {
-                                    LogHelper.print("-facePassHelper-handleFacePassInfo--cardNumber: " + cardNumber + " load imageData error " + imageData);
+                                    LogHelper.print("limeaddFacePassToLocal -facePassHelper-handleFacePassInfo--cardNumber: " + cardNumber + " load imageData error " + imageData);
                                     e.printStackTrace();
                                 }
                                 FacePassAddFaceResult addFaceResult = cbgFacePassHandHelper.addFace(bitmap);
                                 if (addFaceResult != null) {
-                                    LogHelper.print("-facePassHelper-handleFacePassInfo--cardNumber: " + cardNumber + " addFaceResult: " + addFaceResult.result);
+                                    LogHelper.print("limeaddFacePassToLocal -facePassHelper-handleFacePassInfo--cardNumber: " + cardNumber + " addFaceResult: " + addFaceResult.result);
                                     /**
                                      * 0：成功
                                      * 1：没有检测到人脸
@@ -542,6 +543,7 @@ public class FacePassHelper extends ActivityWeakRefHolder {
                                      */
                                     bindFaceGroupResult = addFaceResult.result;
                                     if (bindFaceGroupResult == 0) {
+                                        Log.d(TAG, "limebindFaceGroupResult =========: " + 0);
                                         localAddFaceToken = new String(addFaceResult.faceToken, StandardCharsets.ISO_8859_1);
                                         //添加人脸成功
                                         facePassItemInfo.setCBGCheckFaceResult(20);
@@ -549,10 +551,13 @@ public class FacePassHelper extends ActivityWeakRefHolder {
                                         //绑定到本地人脸库
                                         bindFaceGroupSuccess = cbgFacePassHandHelper.bindFaceGroup(addFaceResult.faceToken);
                                     } else if (bindFaceGroupResult == 1) {
+                                        Log.i(TAG, "limebindFaceGroupResult =========: " + 1);
                                         facePassItemInfo.setCBGCheckFaceResult(3);
                                     } else if (bindFaceGroupResult == 2) {
+                                        Log.w(TAG, "limebindFaceGroupResult =========: " + 2);
                                         facePassItemInfo.setCBGCheckFaceResult(4);
                                     } else {
+                                        Log.w(TAG, "limebindFaceGroupResult =========: " + "?");
                                         facePassItemInfo.setCBGCheckFaceResult(5);
                                     }
                                 } else {
@@ -564,7 +569,7 @@ public class FacePassHelper extends ActivityWeakRefHolder {
                             Response<BaseNetResponse<String>> netResponseResponse = getFacePassCallback(facePassItemInfo).execute();
                             if (netResponseResponse.isSuccessful()) {
                                 BaseNetResponse<String> baseNetResponse = netResponseResponse.body();
-                                if (baseNetResponse != null && TextUtils.equals(baseNetResponse.getCode(), "200")) {
+                                if (baseNetResponse != null && TextUtils.equals(baseNetResponse.getCode(), "10000")) {
                                     String uniqueNumber = facePassItemInfo.getUnique_number();
                                     //插入本地数据库
                                     FacePassPeopleInfoDao facePassPeopleInfoDao = daoSession.getFacePassPeopleInfoDao();
@@ -629,6 +634,7 @@ public class FacePassHelper extends ActivityWeakRefHolder {
                             }
                         } catch (Throwable e) {
                             e.printStackTrace();
+                            Log.w(TAG, "limebindFaceGroupResult =========: " + e.getMessage());
                             LogHelper.print("-facePassHelper-handleFacePassInfo--cardNumber: " + cardNumber + " try catch error: " + e.getMessage());
                             //删除已经添加的人脸库，如果网络请求失败的话
                             CBGFacePassHandlerHelper cbgFacePassHandHelper = ActivityHolderFactory.get(CBGFacePassHandlerHelper.class, activityWithCheck);
@@ -770,7 +776,7 @@ public class FacePassHelper extends ActivityWeakRefHolder {
                             }
                             FacePassDateBaseMMKV.removeAccountTypeList();
                             FacePassDateBaseMMKV.removeDepartmentList();
-                            emitter.onNext(200);
+                            emitter.onNext(10000);
                         } catch (Throwable e) {
                             e.printStackTrace();
                             emitter.onError(e);

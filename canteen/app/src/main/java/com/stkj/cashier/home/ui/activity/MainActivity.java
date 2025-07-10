@@ -241,6 +241,7 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
         facePassHelper.setOnInitFacePassListener(new CBGFacePassHandlerHelper.OnInitFacePassListener() {
             @Override
             public void onInitSuccess() {
+                hideLoadingDialog();
                 initData();
             }
 
