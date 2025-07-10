@@ -8,6 +8,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 
+import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.FutureTarget;
 import com.stkj.cashier.base.greendao.AppGreenDaoOpenHelper;
@@ -61,6 +62,7 @@ import retrofit2.Response;
  */
 public class FacePassHelper extends ActivityWeakRefHolder {
 
+    public final static String TAG = "FacePassHelper";
     private static final int PAGE_SIZE = 15;
     private DaoSession daoSession;
     private Database database;
@@ -397,11 +399,13 @@ public class FacePassHelper extends ActivityWeakRefHolder {
      * 请求人脸库
      */
     public void requestFacePass(int inferior_type, boolean ignoreRequestFacePass) {
+        Log.d(TAG, "limerequestFacePass: " + 401);
         if (!ignoreRequestFacePass) {
             if (isRequestFacePass) {
                 return;
             }
         }
+        Log.d(TAG, "limerequestFacePass: " + 405);
         Activity activityWithCheck = getHolderActivityWithCheck();
         if (activityWithCheck == null) {
             return;
@@ -410,7 +414,7 @@ public class FacePassHelper extends ActivityWeakRefHolder {
         for (OnFacePassListener onFacePassListener : facePassListenerHashSet) {
             onFacePassListener.onLoadFacePassGroupStart();
         }
-        TreeMap<String, String> paramsMap = ParamsUtils.newSortParamsMapWithMode("CompanyMember");
+        TreeMap<String, String> paramsMap = ParamsUtils.newSortParamsMapWithMode("KeyBoardCompanyMember");
         paramsMap.put("inferior_type", String.valueOf(inferior_type));
         RetrofitManager.INSTANCE.getDefaultRetrofit()
                 .create(SettingService.class)
@@ -420,6 +424,7 @@ public class FacePassHelper extends ActivityWeakRefHolder {
                 .subscribe(new DefaultObserver<BaseNetResponse<FacePassPeopleListInfo>>() {
                     @Override
                     protected void onSuccess(BaseNetResponse<FacePassPeopleListInfo> baseNetResponse) {
+                        Log.d(TAG, "limerequestFacePass: " + JSON.toJSONString(baseNetResponse));
                         FacePassPeopleListInfo responseData = baseNetResponse.getData();
                         if (responseData != null && responseData.getResults() != null && !responseData.getResults().isEmpty()) {
                             List<FacePassPeopleInfo> passPeopleInfoList = responseData.getResults();
@@ -435,6 +440,7 @@ public class FacePassHelper extends ActivityWeakRefHolder {
                     @Override
                     public void onError(Throwable e) {
                         callbackFinishFacePass(e.getMessage(), true);
+                        Log.e(TAG, "limerequestFacePass: " + e.getMessage());
                     }
                 });
     }
@@ -915,6 +921,12 @@ public class FacePassHelper extends ActivityWeakRefHolder {
         default void onHandleLocalCardNumberError(String cardNumber) {
             LogHelper.print("-facePassHelper--onHandleLocalCardNumberError-" + cardNumber);
         }
+    }
+
+    public long getFaceCount(){
+        daoSession.clear();
+        FacePassPeopleInfoDao facePassPeopleInfoDao = daoSession.getFacePassPeopleInfoDao();
+        return facePassPeopleInfoDao.count();
     }
 
     public interface OnHandlePhoneListener {

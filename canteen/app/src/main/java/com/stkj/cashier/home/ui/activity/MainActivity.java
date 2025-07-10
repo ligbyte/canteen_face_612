@@ -33,6 +33,7 @@ import com.stkj.cashier.base.permission.AppPermissionHelper;
 import com.stkj.cashier.base.tts.TTSVoiceHelper;
 import com.stkj.cashier.base.ui.dialog.CommonAlertDialogFragment;
 import com.stkj.cashier.base.ui.dialog.CommonBindAlertDialogFragment;
+import com.stkj.cashier.base.ui.dialog.CommonBindSignleAlertDialogFragment;
 import com.stkj.cashier.base.ui.dialog.CommonInputDialogFragment;
 import com.stkj.cashier.base.ui.dialog.CommonSelectDialogFragment;
 import com.stkj.cashier.base.ui.dialog.FaceChooseDialogFragment;
@@ -53,6 +54,7 @@ import com.stkj.cashier.home.ui.widget.HomeTabLayout;
 import com.stkj.cashier.home.ui.widget.HomeTitleLayout;
 import com.stkj.cashier.pay.data.PayConstants;
 import com.stkj.cashier.pay.helper.ConsumerModeHelper;
+import com.stkj.cashier.pay.model.BindFragmentBackEvent;
 import com.stkj.cashier.pay.model.BindFragmentSwitchEvent;
 import com.stkj.cashier.pay.model.FindViewResumeEvent;
 import com.stkj.cashier.pay.model.TTSSpeakEvent;
@@ -245,9 +247,9 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
             @Override
             public void onInitError(String msg) {
                 hideLoadingDialog();
-                CommonDialogUtils.showTipsBindDialog(MainActivity.this, "提示",msg, "知道了", new CommonBindAlertDialogFragment.OnSweetClickListener() {
+                CommonDialogUtils.showTipsBindDialog(MainActivity.this, "提示",msg, "知道了", new CommonBindSignleAlertDialogFragment.OnSweetClickListener() {
                     @Override
-                    public void onClick(CommonBindAlertDialogFragment alertDialogFragment) {
+                    public void onClick(CommonBindSignleAlertDialogFragment alertDialogFragment) {
                         initData();
                     }
                 });
@@ -288,6 +290,9 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
         flScreenWelcom.setVisibility(View.VISIBLE);
 
     }
+
+
+
 
     /**
      * 清理焦点
@@ -631,7 +636,7 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
                 AndroidUtils.killApp(this);
             }
         }else {
-            EventBus.getDefault().post(new BindFragmentSwitchEvent(0));
+            EventBus.getDefault().post(new BindFragmentBackEvent(vp2Content.getCurrentItem()));
         }
     }
 

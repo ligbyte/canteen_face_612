@@ -12,7 +12,7 @@ import retrofit2.http.QueryMap;
 public interface OrderService {
 
     //快速查找商品列表
-    @GET("home/v3/index")
+    @GET("home/v2/index")
     Observable<BaseNetResponse<OrderListResponse>> getOrderList(@QueryMap Map<String, String> requestParams);
 
 

@@ -17,15 +17,15 @@ import retrofit2.http.QueryMap;
 public interface StatService {
 
     //获取餐厅统计
-    @GET("home/v3/index")
+    @GET("home/v2/index")
     Observable<BaseNetResponse<CanteenSummary>> getCanteenSummary(@QueryMap Map<String, String> requestParams);
 
     //设备退款
-    @GET("home/v3/index")
+    @GET("home/v2/index")
     Observable<BaseNetResponse<FoodConsumeDetailResponse>> foodRefund(@QueryMap Map<String, String> requestParams);
 
     //菜品退款记录
-    @GET("home/v3/index")
+    @GET("home/v2/index")
     Observable<BaseNetResponse<FoodConsumeRefundResponse>> foodRefundList(@QueryMap Map<String, String> requestParams);
 
 }

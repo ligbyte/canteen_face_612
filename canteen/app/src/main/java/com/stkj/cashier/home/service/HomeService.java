@@ -27,18 +27,18 @@ public interface HomeService {
     /**
      * 设备查询心跳接口
      */
-    @GET("home/v3/heartBeat")
+    @GET("home/v2/heartBeat")
     Observable<BaseNetResponse<HeartBeatInfo>> heartBeat(@QueryMap Map<String, String> params);
 
     /**
      * 设备录入公司名称接口
      */
-    @GET("home/v3/index")
+    @GET("home/v2/index")
     Observable<BaseNetResponse<StoreInfo>> getStoreInfo(@QueryMap Map<String, String> params);
 
     /**
      * 设备录入脱机参数接口
      */
-    @GET("home/v3/index")
+    @GET("home/v2/index")
     Observable<BaseNetResponse<OfflineSetInfo>> offlineSet(@QueryMap Map<String, String> params);
 }

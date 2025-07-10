@@ -42,64 +42,64 @@ public interface PayService {
     Observable<BaseResponse<String>> addGoods(@Body GoodsBaseInfo requestParams);
 
     //获取消费账单列表
-    @GET("home/v3/index")
+    @GET("home/v2/index")
     Observable<BaseNetResponse<ConsumerRecordListResponse>> getConsumerRecordList(@QueryMap Map<String, String> requestParams);
 
     //获取消费账单列表
-    @GET("home/v3/index")
+    @GET("home/v2/index")
     Observable<BaseNetResponse<FoodConsumePageResponse>> foodConsumePage(@QueryMap Map<String, String> requestParams);
 
     //获取消费账单列表详情
-    @GET("home/v3/index")
+    @GET("home/v2/index")
     Observable<BaseNetResponse<FoodConsumeDetailResponse>> foodConsumeDetail(@QueryMap Map<String, String> requestParams);
 
 
     //获取消费账单列表每日统计
-    @GET("home/v3/index")
+    @GET("home/v2/index")
     Observable<BaseNetResponse<FoodBillStatDayPageResponse>> foodBillStatDayPage(@QueryMap Map<String, String> requestParams);
 
     //获取退款账单列表
-    @GET("home/v3/index")
+    @GET("home/v2/index")
     Observable<BaseNetResponse<ConsumerRecordListResponse>> getRefundOrderList(@QueryMap Map<String, String> requestParams);
 
     //去退款账单
-    @POST("home/v3/index")
+    @POST("home/v2/index")
     Observable<BaseNetResponse<Object>> refundOrder(@Body Map<String, String> paramsMap);
 
     //去支付
-    @GET("home/v3/index")
+    @GET("home/v2/index")
     Observable<BaseNetResponse<ModifyBalanceResult>> goToPay(@QueryMap Map<String, String> requestParams);
 
     //去支付 foods
-    @GET("home/v3/index")
+    @GET("home/v2/index")
     Observable<BaseNetResponse<ModifyBalanceResult>> goToPayFoods(@QueryMap Map<String, String> requestParams);
 
     //菜品新增 foods
-    @GET("home/v3/index")
+    @GET("home/v2/index")
     Observable<FoodSave> foodSave(@QueryMap Map<String, String> requestParams);
 
     //获取支付状态
-    @GET("home/v3/index")
+    @GET("home/v2/index")
     Observable<BaseNetResponse<ModifyBalanceResult>> getPayStatus(@QueryMap Map<String, String> requestParams);
 
     //获取取餐列表
-    @GET("home/v3/index")
+    @GET("home/v2/index")
     Observable<TakeMealListResult> takeMealList(@QueryMap Map<String, String> requestParams);
 
     //获取取餐列表
-    @GET("home/v3/index")
+    @GET("home/v2/index")
     Observable<TakeMealListResult> takeCodeQuery(@QueryMap Map<String, String> requestParams);
 
     //出餐
-    @POST("home/v3/index")
+    @POST("home/v2/index")
     Observable<BaseNetResponse<TakeMealResult>> takeMeal(@QueryMap Map<String, String> requestParams);
 
     //获取当前餐厅时段信息
-    @GET("home/v3/index")
+    @GET("home/v2/index")
     Observable<BaseNetResponse<CanteenCurrentTimeInfo>> getCanteenTimeInfo(@QueryMap Map<String, String> requestParams);
 
     //获取按次消费的金额信息
-    @GET("home/v3/index")
+    @GET("home/v2/index")
     Observable<BaseNetResponse<List<IntervalCardType>>> getIntervalCardType(@QueryMap Map<String, String> requestParams);
 
 
@@ -150,7 +150,7 @@ public interface PayService {
     /**
      * 同步菜品
      */
-    @GET("home/v3/index")
+    @GET("home/v2/index")
     Observable<BaseNetResponse<FoodCategoryListInfo>> foodCategory(@QueryMap Map<String, String> requestParams);
 
 }

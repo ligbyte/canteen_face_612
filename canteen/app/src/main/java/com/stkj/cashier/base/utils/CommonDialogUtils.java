@@ -7,6 +7,7 @@ import com.stkj.cashier.base.net.AppNetManager;
 import com.stkj.cashier.base.ui.dialog.BindingPwdAlertDialogFragment;
 import com.stkj.cashier.base.ui.dialog.CommonAlertDialogFragment;
 import com.stkj.cashier.base.ui.dialog.CommonBindAlertDialogFragment;
+import com.stkj.cashier.base.ui.dialog.CommonBindSignleAlertDialogFragment;
 import com.stkj.cashier.login.helper.LoginHelper;
 import com.stkj.cashier.setting.helper.FacePassHelper;
 import com.stkj.common.core.ActivityHolderFactory;
@@ -39,8 +40,8 @@ public class CommonDialogUtils {
                 .show(context);
     }
 
-    public static void showTipsBindDialog(Context context, String title,String msg, String confirmText, CommonBindAlertDialogFragment.OnSweetClickListener confirmClickListener) {
-        CommonBindAlertDialogFragment.build()
+    public static void showTipsBindDialog(Context context, String title,String msg, String confirmText, CommonBindSignleAlertDialogFragment.OnSweetClickListener confirmClickListener) {
+        CommonBindSignleAlertDialogFragment.build()
                 .setAlertTitleTxt(title)
                 .setAlertContentTxt(msg)
                 .setLeftNavTxt(confirmText)

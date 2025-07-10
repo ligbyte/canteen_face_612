@@ -18,13 +18,13 @@ public interface AppService {
     /**
      * 设备初始化
      */
-    @GET("/home/v3/setDomain")
+    @GET("/home/v2/setDomain")
     Observable<AppNetInitResponse> appInit(@QueryMap Map<String, String> queryMap);
 
     /**
      * 设备查询网络状态接口
      */
-    @GET("home/v3/healthCheck")
+    @GET("home/v2/healthCheck")
     Observable<BaseResponse<Object>> netHealthCheck(@QueryMap Map<String, String> params);
 
     /**

@@ -46,15 +46,16 @@
             android:layout_marginTop="@dimen/dp_18"
             android:orientation="horizontal">
 
-            <TextView
+            <com.stkj.common.ui.widget.shapelayout.ShapeTextView
                 android:id="@+id/stv_left_bt"
-                android:layout_width="@dimen/dp_79"
+                android:layout_width="@dimen/dp_180"
                 android:layout_height="@dimen/dp_23"
                 android:gravity="center"
                 android:text="确定"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_8"
-                android:background="@drawable/btn_gradient_bottom_to_top"/>
+                app:radiusT="@dimen/dp_4"
+                app:solidColorT="#253050" />
 
             <com.stkj.common.ui.widget.shapelayout.ShapeTextView
                 android:id="@+id/stv_right_bt"
@@ -64,11 +65,11 @@
                 android:gravity="center"
                 android:includeFontPadding="false"
                 android:text="取消"
-                android:textColor="@color/white"
+                android:textColor="@color/color_151619"
                 android:textSize="@dimen/sp_8"
                 android:visibility="gone"
                 app:radiusT="@dimen/dp_4"
-                app:solidColorT="@color/color_253050" />
+                app:solidColorT="@color/color_F1F2F4" />
         </LinearLayout>
     </com.stkj.common.ui.widget.shapelayout.ShapeLinearLayout>
 
