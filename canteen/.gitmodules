@@ -16,9 +16,9 @@
 [submodule "telpo_c50a"]
 	path = ../telpo_c50a
 	url = ../telpo_c50a.git
-[submodule "telpo_c50a_pro"]
-	path = ../telpo_c50a_pro
-	url = ../telpo_c50a_pro.git
+[submodule "vz_k58_youxin_edp"]
+	path = ../vz_k58_youxin_edp
+	url = ../vz_k58_youxin_edp.git
 [submodule "telpo_d2"]
 	path = ../telpo_d2
 	url = ../telpo_d2.git

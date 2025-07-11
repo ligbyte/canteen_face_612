@@ -7,8 +7,8 @@ def currentFlavor = "defaultDevice"
 task initCurrentFlavor(dependsOn: sourceSets) {
     def taskRequest = gradle.getStartParameter().getTaskRequests().toString().toLowerCase()
     if (taskRequest.contains("telpo_c50a")) {
-        if (taskRequest.contains("telpo_c50a_pro")) {
-            currentFlavor = "telpo_c50a_pro"
+        if (taskRequest.contains("vz_k58_youxin_edp")) {
+            currentFlavor = "vz_k58_youxin_edp"
         } else {
             currentFlavor = "telpo_c50a"
         }
@@ -78,10 +78,10 @@ android {
             v1SigningEnabled true
             v2SigningEnabled true
         }
-        telpo_c50a_pro {
+        vz_k58_youxin_edp {
             keyAlias 'telpo'
             keyPassword '86337898'
-            storeFile file('../../telpo_c50a_pro/platform_c50a.jks')
+            storeFile file('../../vz_k58_youxin_edp/platform_c50a.jks')
             storePassword '86337898'
             v1SigningEnabled true
             v2SigningEnabled true
@@ -125,10 +125,10 @@ android {
             ]
             signingConfig signingConfigs.telpo_c50a
         }
-        telpo_c50a_pro {
+        vz_k58_youxin_edp {
             dimension "device"
-            buildConfigField('String', 'deviceInterface', '\"com.stkj.device.telpo_c50a_pro.DeviceImpl\"')
-            buildConfigField('String', 'deviceType', '\"cashier_telpo_c50a_pro\"')
+            buildConfigField('String', 'deviceInterface', '\"com.stkj.device.vz_k58_youxin_edp.DeviceImpl\"')
+            buildConfigField('String', 'deviceType', '\"cashier_vz_k58_youxin_edp\"')
             manifestPlaceholders = [
                     shareUserId: "android.uid.system"
             ]
@@ -172,8 +172,8 @@ dependencies {
     //不同设备不同实现
     if ("telpo_c50a" == currentFlavor) {
         implementation project(path: ':telpo_c50a')
-    } else if ("telpo_c50a_pro" == currentFlavor) {
-        implementation project(path: ':telpo_c50a_pro')
+    } else if ("vz_k58_youxin_edp" == currentFlavor) {
+        implementation project(path: ':vz_k58_youxin_edp')
     }
 
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'

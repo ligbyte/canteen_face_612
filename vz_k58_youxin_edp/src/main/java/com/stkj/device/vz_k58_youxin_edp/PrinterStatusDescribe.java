@@ -1,4 +1,4 @@
-package com.stkj.device.telpo_c50a_pro;
+package com.stkj.device.vz_k58_youxin_edp;
 
 
 /**

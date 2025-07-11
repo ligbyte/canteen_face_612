@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace 'com.stkj.device.telpo_c50a_pro'
+    namespace 'com.stkj.device.vz_k58_youxin_edp'
     compileSdk rootProject.compileSdkVersion
 
     defaultConfig {
