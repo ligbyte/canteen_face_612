@@ -6,15 +6,7 @@ plugins {
 def currentFlavor = "defaultDevice"
 task initCurrentFlavor(dependsOn: sourceSets) {
     def taskRequest = gradle.getStartParameter().getTaskRequests().toString().toLowerCase()
-    if (taskRequest.contains("maibaole_rk3568")) {
-        currentFlavor = "maibaole_rk3568"
-    } else if (taskRequest.contains("maibaole_rk3399")) {
-        currentFlavor = "maibaole_rk3399"
-    } else if (taskRequest.contains("telpo_d2")) {
-        currentFlavor = "telpo_d2"
-    } else if (taskRequest.contains("huayi_rk3568h09")) {
-        currentFlavor = "huayi_rk3568h09"
-    } else if (taskRequest.contains("telpo_c50a")) {
+    if (taskRequest.contains("telpo_c50a")) {
         if (taskRequest.contains("telpo_c50a_pro")) {
             currentFlavor = "telpo_c50a_pro"
         } else {
@@ -76,39 +68,7 @@ android {
             v1SigningEnabled true
             v2SigningEnabled true
         }
-        maibaole_rk3568 {
-            keyAlias 'android'
-            keyPassword 'android'
-            storeFile file('../../maibaole_rk3568/platform-pwd-android.jks')
-            storePassword 'android'
-            v1SigningEnabled true
-            v2SigningEnabled true
-        }
-        maibaole_rk3399 {
-            keyAlias 'android'
-            keyPassword 'android'
-            storeFile file('../../maibaole_rk3399/platform-pwd-android.jks')
-            storePassword 'android'
-            v1SigningEnabled true
-            v2SigningEnabled true
-        }
-        telpo_d2 {
-            keyAlias 'telpo'
-            keyPassword '86337898'
-            storeFile file('../../telpo_d2/platform_D2_580P.jks')
-            storePassword '86337898'
-            v1SigningEnabled true
-            v2SigningEnabled true
-        }
 
-        huayi_rk3568h09 {
-            keyAlias 'android'
-            keyPassword 'android'
-            storeFile file('../../huayi_rk3568h09/platform.jks')
-            storePassword 'android'
-            v1SigningEnabled true
-            v2SigningEnabled true
-        }
 
         telpo_c50a {
             keyAlias 'telpo'
@@ -155,43 +115,7 @@ android {
             ]
             signingConfig signingConfigs.defaultDevice
         }
-        maibaole_rk3568 {
-            dimension "device"
-            buildConfigField('String', 'deviceInterface', '\"com.stkj.device.maibaole_rk3568.DeviceImpl\"')
-            buildConfigField('String', 'deviceType', '\"cashier_maibaole_rk3568\"')
-            manifestPlaceholders = [
-                    shareUserId: "android.uid.system"
-            ]
-            signingConfig signingConfigs.maibaole_rk3568
-        }
-        maibaole_rk3399 {
-            dimension "device"
-            buildConfigField('String', 'deviceInterface', '\"com.stkj.device.maibaole_rk3399.DeviceImpl\"')
-            buildConfigField('String', 'deviceType', '\"maibaole_3399\"')
-            manifestPlaceholders = [
-                    shareUserId: "android.uid.system"
-            ]
-            signingConfig signingConfigs.maibaole_rk3399
-        }
-        telpo_d2 {
-            dimension "device"
-            buildConfigField('String', 'deviceInterface', '\"com.stkj.device.telpo_d2.DeviceImpl\"')
-            buildConfigField('String', 'deviceType', '\"cashier_telpo_d2\"')
-            manifestPlaceholders = [
-                    shareUserId: "android.uid.system"
-            ]
-            signingConfig signingConfigs.telpo_d2
-        }
 
-        huayi_rk3568h09 {
-            dimension "device"
-            buildConfigField('String', 'deviceInterface', '\"com.stkj.device.huayi_rk3568h09.DeviceImpl\"')
-            buildConfigField('String', 'deviceType', '\"cashier_huayi_rk3568h09\"')
-            manifestPlaceholders = [
-                    shareUserId: "android.uid.system"
-            ]
-            signingConfig signingConfigs.huayi_rk3568h09
-        }
         telpo_c50a {
             dimension "device"
             buildConfigField('String', 'deviceInterface', '\"com.stkj.device.telpo_c50a.DeviceImpl\"')
@@ -246,15 +170,7 @@ dependencies {
     implementation project(path: ':cbgfacefass')
 
     //不同设备不同实现
-    if ("maibaole_rk3568" == currentFlavor) {
-        implementation project(path: ':maibaole_rk3568')
-    } else if ("maibaole_rk3399" == currentFlavor) {
-        implementation project(path: ':maibaole_rk3399')
-    } else if ("telpo_d2" == currentFlavor) {
-        implementation project(path: ':telpo_d2')
-    } else if ("huayi_rk3568h09" == currentFlavor) {
-        implementation project(path: ':huayi_rk3568h09')
-    }else if ("telpo_c50a" == currentFlavor) {
+    if ("telpo_c50a" == currentFlavor) {
         implementation project(path: ':telpo_c50a')
     } else if ("telpo_c50a_pro" == currentFlavor) {
         implementation project(path: ':telpo_c50a_pro')
