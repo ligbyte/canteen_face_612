@@ -174,7 +174,7 @@
                 android:paddingRight="@dimen/dp_15"
                 android:text="返回首页(3s)"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_20"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_12"
                 android:background="@drawable/btn_gradient_bottom_to_top"/>
