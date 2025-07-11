@@ -4,8 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -18,10 +16,15 @@ import com.stkj.cashier.base.device.DeviceManager;
 import com.stkj.cashier.base.ui.adapter.FoodListShowAdapter;
 import com.stkj.cashier.base.ui.widget.FacePassCameraLayout;
 import com.stkj.cashier.base.utils.EventBusUtils;
+import com.stkj.cashier.consumer.ConsumerManager;
 import com.stkj.cashier.consumer.callback.ConsumerController;
 import com.stkj.cashier.consumer.callback.ConsumerListener;
 import com.stkj.cashier.consumer.callback.OnInputNumberListener;
 import com.stkj.cashier.consumer.ui.weight.SimpleInputNumber;
+import com.stkj.cashier.home.callback.OnGetStoreInfoListener;
+import com.stkj.cashier.home.model.StoreInfo;
+import com.stkj.cashier.home.ui.activity.MainActivity;
+import com.stkj.cashier.home.ui.widget.BindingHomeTitleLayout;
 import com.stkj.cashier.home.ui.widget.HomeTitleLayout;
 import com.stkj.cashier.pay.callback.OnConsumerModeListener;
 import com.stkj.cashier.pay.data.PayConstants;
@@ -30,10 +33,12 @@ import com.stkj.cashier.pay.model.ChangeConsumerModeEvent;
 import com.stkj.cashier.pay.model.RefreshConsumerGoodsModeEvent;
 import com.stkj.cashier.pay.ui.fragment.AddGoodsFragment;
 import com.stkj.cashier.pay.ui.fragment.AmountConsumerFragment;
+import com.stkj.cashier.pay.ui.fragment.BasePayHelperFragment;
 import com.stkj.cashier.pay.ui.fragment.GoodsConsumerFragment;
 import com.stkj.cashier.pay.ui.fragment.NumberConsumerFragment;
 import com.stkj.cashier.pay.ui.fragment.TakeMealConsumerFragment;
 import com.stkj.cashier.pay.ui.fragment.WeightConsumerFragment;
+import com.stkj.cashier.setting.helper.StoreInfoHelper;
 import com.stkj.cashier.setting.model.FacePassPeopleInfo;
 import com.stkj.common.core.AppManager;
 import com.stkj.common.ui.fragment.BaseRecyclerFragment;
@@ -49,9 +54,9 @@ import org.greenrobot.eventbus.ThreadMode;
 /**
  * 绑盘机页面——首页
  */
-public class TabBindFragment extends BaseRecyclerFragment implements OnConsumerModeListener , ConsumerController {
+public class TabBindHomeFragment extends BasePayHelperFragment implements OnConsumerModeListener , ConsumerController {
 
-    public final static String TAG = "ConsumerPresentation";
+    public final static String TAG = "TabBindHomeFragment";
     //    private LinearLayout llOrderList;
 //    private RecyclerView rvGoodsList;
 //    private LinearLayout llFastPayPresentation;
@@ -61,7 +66,7 @@ public class TabBindFragment extends BaseRecyclerFragment implements OnConsumerM
 //    private CommonRecyclerAdapter mOrderAdapter;
     private ShapeFrameLayout sflConsumerContent;
     private FacePassCameraLayout fpcFace;
-    private HomeTitleLayout htlConsumer;
+    private BindingHomeTitleLayout htlConsumer;
 
     private ConsumerListener consumerListener;
     private OnConsumerConfirmListener facePassConfirmListener;
@@ -97,10 +102,10 @@ public class TabBindFragment extends BaseRecyclerFragment implements OnConsumerM
     @Override
     protected void onFragmentResume(boolean isFirstOnResume) {
         EventBusUtils.registerEventBus(this);
-
         ConsumerModeHelper consumerModeHelper = new ConsumerModeHelper(AppManager.INSTANCE.getMainActivity());
         currentConsumerMode = consumerModeHelper.getCurrentConsumerMode();
         findViews();
+
     }
 
     private void findViews() {
@@ -128,7 +133,7 @@ public class TabBindFragment extends BaseRecyclerFragment implements OnConsumerM
             sinNumber = (SimpleInputNumber) findViewById(R.id.sin_number);
             stvPayPrice = (ShapeTextView) findViewById(R.id.stv_pay_price);
             stv_pay_price_balance = (ShapeTextView) findViewById(R.id.stv_pay_price_balance);
-            htlConsumer = (HomeTitleLayout) findViewById(R.id.htl_consumer);
+            htlConsumer = (BindingHomeTitleLayout) findViewById(R.id.htl_consumer);
             sflConsumerContent = (ShapeFrameLayout) findViewById(R.id.sfl_consumer_content);
             fpcFace = (FacePassCameraLayout) findViewById(R.id.fpc_face);
             llFaceConfirm = (LinearLayout) findViewById(R.id.ll_face_confirm);
@@ -156,9 +161,9 @@ public class TabBindFragment extends BaseRecyclerFragment implements OnConsumerM
             Log.d(TAG, "limefindViews: " + 187);
             consumerListener.onCreateFacePreviewView(fpcFace.getFacePreviewFace(), fpcFace.getIrPreviewFace());
         }
-        if (consumerListener != null) {
-            consumerListener.onCreateTitleLayout(htlConsumer);
-        }
+//        if (consumerListener != null) {
+//            consumerListener.onCreateTitleLayout(htlConsumer);
+//        }
 //        sflOrderList = (ShapeFrameLayout) findViewById(R.id.sfl_order_list);
 //        rvGoodsList = (RecyclerView) findViewById(R.id.rv_goods_list);
 //        llFastPayPresentation = (LinearLayout) findViewById(R.id.ll_fast_pay_presentation);
@@ -221,6 +226,8 @@ public class TabBindFragment extends BaseRecyclerFragment implements OnConsumerM
                 }
             }
         });
+
+        ConsumerManager.INSTANCE.setConsumerTips("欢迎光临!");
     }
 
     /**

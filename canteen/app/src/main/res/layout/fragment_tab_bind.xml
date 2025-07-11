@@ -6,11 +6,12 @@
     android:background="@null"
     android:orientation="vertical">
 
-    <com.stkj.cashier.home.ui.widget.HomeTitleLayout
+    <com.stkj.cashier.home.ui.widget.BindingHomeTitleLayout
         android:id="@+id/htl_consumer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@null"
+        android:visibility="gone"
         app:htl_consume_lay_res="1"
         app:isLightMode="true" />
 

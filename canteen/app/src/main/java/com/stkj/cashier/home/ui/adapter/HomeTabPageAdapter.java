@@ -9,20 +9,9 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.stkj.cashier.home.model.HomeMenuList;
 import com.stkj.cashier.home.model.HomeTabInfo;
-import com.stkj.cashier.machine.bind.TabBindFragment;
+import com.stkj.cashier.machine.bind.TabBindHomeFragment;
 import com.stkj.cashier.machine.bind.TabBindSettingFragment;
-import com.stkj.cashier.pay.data.PayConstants;
-import com.stkj.cashier.pay.helper.ConsumerModeHelper;
-import com.stkj.cashier.pay.model.ConsumerOrderRefreshEvent;
-import com.stkj.cashier.pay.model.RefreshUpdateGoodsEvent;
-import com.stkj.cashier.pay.ui.fragment.TabPayFragment;
-import com.stkj.cashier.setting.ui.fragment.TabSettingFragment;
-import com.stkj.cashier.stat.ui.fragment.TabStatFragment;
-import com.stkj.cashier.stat.ui.fragment.TabStatGoodsFragment;
-import com.stkj.cashier.stat.ui.fragment.TabStatSwitchFragment;
 import com.stkj.common.ui.adapter.CommonFragmentPageAdapter;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -56,7 +45,7 @@ public class HomeTabPageAdapter extends CommonFragmentPageAdapter {
         Log.d(TAG, "limeonPageSelected 56: ");
         if (TextUtils.equals(path, TAB_BINDING_TAG)) {
             Log.d(TAG, "limeonPageSelected 58: ");
-            return new TabBindFragment();
+            return new TabBindHomeFragment();
         } else {
             Log.d(TAG, "limeonPageSelected 60: ");
             return new TabBindSettingFragment();

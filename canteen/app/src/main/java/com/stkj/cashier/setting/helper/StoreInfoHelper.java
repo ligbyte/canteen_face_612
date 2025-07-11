@@ -2,10 +2,12 @@ package com.stkj.cashier.setting.helper;
 
 import android.app.Activity;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 
+import com.alibaba.fastjson.JSON;
 import com.stkj.cashier.base.device.DeviceManager;
 import com.stkj.cashier.base.model.BaseNetResponse;
 import com.stkj.cashier.base.net.ParamsUtils;
@@ -28,6 +30,7 @@ import java.util.TreeMap;
  */
 public class StoreInfoHelper extends ActivityWeakRefHolder {
 
+    public final static String TAG = "StoreInfoHelper";
     private boolean isRequestStoreInfo;
     private Set<OnGetStoreInfoListener> onGetStoreInfoListenerSet = new HashSet<>();
     private StoreInfo mStoreInfo;
@@ -54,6 +57,7 @@ public class StoreInfoHelper extends ActivityWeakRefHolder {
                 .subscribe(new DefaultObserver<BaseNetResponse<StoreInfo>>() {
                     @Override
                     protected void onSuccess(BaseNetResponse<StoreInfo> storeInfoBaseNetResponse) {
+                        Log.d(TAG, "limecompany_setup: " + JSON.toJSONString(storeInfoBaseNetResponse));
                         isRequestStoreInfo = false;
                         StoreInfo storeInfo = storeInfoBaseNetResponse.getData();
                         if (storeInfo != null && !TextUtils.isEmpty(storeInfo.getDeviceName())) {
@@ -67,6 +71,7 @@ public class StoreInfoHelper extends ActivityWeakRefHolder {
                     @Override
                     public void onError(Throwable e) {
                         isRequestStoreInfo = false;
+                        Log.e(TAG, "limecompany_setup: " + e.getMessage());
                     }
                 });
     }

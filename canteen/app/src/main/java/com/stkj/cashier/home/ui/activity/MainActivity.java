@@ -42,14 +42,17 @@ import com.stkj.cashier.base.utils.CommonDialogUtils;
 import com.stkj.cashier.base.utils.MD5Utils;
 import com.stkj.cashier.consumer.ConsumerManager;
 import com.stkj.cashier.consumer.callback.ConsumerListener;
+import com.stkj.cashier.home.callback.OnGetStoreInfoListener;
 import com.stkj.cashier.home.helper.CBGCameraHelper;
 import com.stkj.cashier.home.helper.HeartBeatHelper;
 import com.stkj.cashier.home.helper.ScreenProtectHelper;
 import com.stkj.cashier.home.helper.SystemEventWatcherHelper;
 import com.stkj.cashier.home.model.HomeMenuList;
 import com.stkj.cashier.home.model.HomeTabInfo;
+import com.stkj.cashier.home.model.StoreInfo;
 import com.stkj.cashier.home.service.HomeService;
 import com.stkj.cashier.home.ui.adapter.HomeTabPageAdapter;
+import com.stkj.cashier.home.ui.widget.BindingHomeTitleLayout;
 import com.stkj.cashier.home.ui.widget.HomeTabLayout;
 import com.stkj.cashier.home.ui.widget.HomeTitleLayout;
 import com.stkj.cashier.pay.data.PayConstants;
@@ -109,6 +112,7 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
     private ViewPager2 vp2Content;
     private FrameLayout flScreenWelcom;
     private HomeTabPageAdapter homeTabPageAdapter;
+    private BindingHomeTitleLayout htlConsumer;
     //是否需要重新恢复消费者页面
     private boolean needRestartConsumer;
     //是否初始化了菜单数据
@@ -290,6 +294,14 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
         vp2Content.setVisibility(View.GONE);
         flScreenWelcom.setVisibility(View.VISIBLE);
 
+        flScreenWelcom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                flScreenWelcom.setVisibility(View.GONE);
+                vp2Content.setVisibility(View.VISIBLE);
+            }
+        });
+
     }
 
 
@@ -311,7 +323,7 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
 
     private void findViews() {
         scanHolderView = findViewById(R.id.scan_holder_view);
-
+        htlConsumer = (BindingHomeTitleLayout) findViewById(R.id.htl_consumer);
         flScreenWelcom = findViewById(R.id.fl_screen_welcom);
 //        flScreenProtect.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -565,6 +577,12 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
         //请求设备信息
         StoreInfoHelper storeInfoHelper = getWeakRefHolder(StoreInfoHelper.class);
         storeInfoHelper.requestStoreInfo();
+        storeInfoHelper.addGetStoreInfoListener(new OnGetStoreInfoListener() {
+            @Override
+            public void onGetStoreInfo(StoreInfo storeInfo) {
+                htlConsumer.getTv_canteen_name().setText(storeInfo.getDeviceName());
+            }
+        });
         //获取餐厅时段信息
         ConsumerModeHelper consumerModeHelper = getWeakRefHolder(ConsumerModeHelper.class);
         consumerModeHelper.requestCanteenCurrentTimeInfo();

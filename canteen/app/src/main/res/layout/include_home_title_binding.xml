@@ -9,14 +9,14 @@
     <!-- 超市icon -->
     <ImageView
         android:id="@+id/iv_super_market_icon"
-        android:layout_width="@dimen/dp_26"
+        android:layout_width="@dimen/dp_20"
         android:layout_height="match_parent"
         android:layout_marginRight="@dimen/dp_5"
         android:src="@mipmap/icon_canteen"
         android:visibility="gone" />
 
     <!-- 超市名称+编号 -->
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
@@ -27,9 +27,32 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:includeFontPadding="false"
+            android:layout_centerVertical="true"
             android:text="慧餐宝"
-            android:textColor="@color/color_333333"
-            android:textSize="@dimen/sp_16"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_13"
+            android:textStyle="bold" />
+
+        <View
+            android:id="@+id/tv_store_name_divider"
+            android:layout_width="2dp"
+            android:layout_height="@dimen/dp_13"
+            android:layout_toRightOf="@+id/tv_store_name"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_centerVertical="true"
+            android:background="#2BFFFFFF"/>
+
+        <TextView
+            android:id="@+id/tv_canteen_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:layout_toRightOf="@+id/tv_store_name_divider"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_centerVertical="true"
+            android:text=""
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_13"
             android:textStyle="bold" />
 
         <TextView
@@ -43,7 +66,7 @@
             android:textColor="@color/color_333333"
             android:visibility="gone"
             android:textSize="@dimen/sp_7" />
-    </LinearLayout>
+    </RelativeLayout>
 
     <!-- 消费模式 -->
     <com.stkj.common.ui.widget.shapelayout.ShapeTextView
@@ -99,7 +122,7 @@
             android:includeFontPadding="false"
             android:text="2025-06-29 12:53"
             android:textColor="@color/color_333333"
-            android:textSize="@dimen/sp_18"
+            android:textSize="@dimen/sp_13"
             android:textStyle="bold" />
 
         <TextView
@@ -114,8 +137,8 @@
 
         <ImageView
             android:id="@+id/iv_sys_settings"
-            android:layout_width="@dimen/dp_20"
-            android:layout_height="@dimen/dp_20"
+            android:layout_width="@dimen/dp_13"
+            android:layout_height="@dimen/dp_13"
             android:src="@mipmap/ic_main_settings"
             android:visibility="visible"/>
 

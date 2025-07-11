@@ -52,6 +52,7 @@ public class BindingHomeTitleLayout extends FrameLayout implements SystemEventWa
     private ImageView ivSysSettings;
     private TextView tvSysTime;
     private TextView tvSysMonthWeek;
+    private TextView tv_canteen_name;
     private TextView tvNetDelayTime;
     private ShapeTextView stvConsumerMode;
     private Context context;
@@ -92,6 +93,7 @@ public class BindingHomeTitleLayout extends FrameLayout implements SystemEventWa
         tvSysMonthWeek = (TextView) findViewById(R.id.tv_sys_month_week);
         tvNetDelayTime = (TextView) findViewById(R.id.tv_net_delay_time);
         stvConsumerMode = (ShapeTextView) findViewById(R.id.stv_consumer_mode);
+        tv_canteen_name = (TextView) findViewById(R.id.tv_canteen_name);
         LogHelper.print("--HomeTitleLayout-getContext-" + getContext());
         if (mIsLightMode) {
             setLightMode(true);
@@ -123,13 +125,11 @@ public class BindingHomeTitleLayout extends FrameLayout implements SystemEventWa
         ivSysSettings.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                EventBus.getDefault().post(new BindFragmentSwitchEvent(1));
-//                CommonDialogUtils.showBindTipsDialog(context,"管理员密码", new BindingPwdAlertDialogFragment.OnSweetClickListener() {
-//                    @Override
-//                    public void onClick(BindingPwdAlertDialogFragment alertDialogFragment) {
-//                    }
-//                });
+                CommonDialogUtils.showBindTipsDialog(context,"管理员密码", new BindingPwdAlertDialogFragment.OnSweetClickListener() {
+                    @Override
+                    public void onClick(BindingPwdAlertDialogFragment alertDialogFragment) {
+                    }
+                });
             }
         });
         refreshDate();
@@ -277,6 +277,11 @@ public class BindingHomeTitleLayout extends FrameLayout implements SystemEventWa
             //无网络
             onNetworkUnavailable();
         }
+    }
+
+
+    public TextView getTv_canteen_name() {
+        return tv_canteen_name;
     }
 
     @Override
