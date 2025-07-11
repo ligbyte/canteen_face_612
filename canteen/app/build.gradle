@@ -79,10 +79,10 @@ android {
             v2SigningEnabled true
         }
         vz_k58_youxin_edp {
-            keyAlias 'telpo'
-            keyPassword '86337898'
-            storeFile file('../../vz_k58_youxin_edp/platform_c50a.jks')
-            storePassword '86337898'
+            keyAlias 'platform'
+            keyPassword 'android'
+            storeFile file('../../vz_k58_youxin_edp/platform.jks')
+            storePassword 'android'
             v1SigningEnabled true
             v2SigningEnabled true
         }
