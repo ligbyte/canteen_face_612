@@ -1,56 +1,38 @@
 package com.stkj.cashier.machine.bind;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.stkj.cashier.R;
 import com.stkj.cashier.base.callback.OnConsumerConfirmListener;
 import com.stkj.cashier.base.device.DeviceManager;
-import com.stkj.cashier.base.ui.adapter.FoodListShowAdapter;
 import com.stkj.cashier.base.ui.widget.FacePassCameraLayout;
 import com.stkj.cashier.base.utils.EventBusUtils;
-import com.stkj.cashier.consumer.ConsumerManager;
 import com.stkj.cashier.consumer.callback.ConsumerController;
 import com.stkj.cashier.consumer.callback.ConsumerListener;
-import com.stkj.cashier.consumer.callback.OnInputNumberListener;
-import com.stkj.cashier.consumer.ui.weight.SimpleInputNumber;
-import com.stkj.cashier.home.callback.OnGetStoreInfoListener;
-import com.stkj.cashier.home.model.StoreInfo;
-import com.stkj.cashier.home.ui.activity.MainActivity;
-import com.stkj.cashier.home.ui.widget.BindingHomeTitleLayout;
-import com.stkj.cashier.home.ui.widget.HomeTitleLayout;
 import com.stkj.cashier.pay.callback.OnConsumerModeListener;
 import com.stkj.cashier.pay.data.PayConstants;
 import com.stkj.cashier.pay.helper.ConsumerModeHelper;
-import com.stkj.cashier.pay.model.ChangeConsumerModeEvent;
+import com.stkj.cashier.pay.model.BindFragmentBackEvent;
+import com.stkj.cashier.pay.model.BindFragmentSwitchEvent;
 import com.stkj.cashier.pay.model.RefreshBindModeEvent;
 import com.stkj.cashier.pay.model.RefreshConsumerGoodsModeEvent;
 import com.stkj.cashier.pay.ui.fragment.AddGoodsFragment;
-import com.stkj.cashier.pay.ui.fragment.AmountConsumerFragment;
 import com.stkj.cashier.pay.ui.fragment.BasePayHelperFragment;
 import com.stkj.cashier.pay.ui.fragment.GoodsConsumerFragment;
-import com.stkj.cashier.pay.ui.fragment.NumberConsumerFragment;
-import com.stkj.cashier.pay.ui.fragment.TakeMealConsumerFragment;
-import com.stkj.cashier.pay.ui.fragment.WeightConsumerFragment;
-import com.stkj.cashier.setting.helper.StoreInfoHelper;
 import com.stkj.cashier.setting.model.FacePassPeopleInfo;
 import com.stkj.common.core.AppManager;
-import com.stkj.common.ui.fragment.BaseRecyclerFragment;
 import com.stkj.common.ui.widget.common.CircleProgressBar;
-import com.stkj.common.ui.widget.shapelayout.ShapeFrameLayout;
 import com.stkj.common.ui.widget.shapelayout.ShapeTextView;
 import com.stkj.common.utils.FragmentUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
 
 /**
  * 绑盘机页面——首页
@@ -78,6 +60,8 @@ public class TabBindHomeFragment extends BasePayHelperFragment implements OnCons
     private Context context;
     private int currentConsumerMode;
     private boolean isConsumerAuthTips;
+    private Handler handler = new Handler() {
+    };
 
     @Override
     protected int getLayoutResId() {
@@ -135,10 +119,21 @@ public class TabBindHomeFragment extends BasePayHelperFragment implements OnCons
         }
     }
 
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            Log.d(TAG, "limerunnable: " + 124);
+            EventBus.getDefault().post(new BindFragmentSwitchEvent(0));
+            stopAllAuth();
+        }
+    };
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRefreshBindModeEvent(RefreshBindModeEvent eventBus) {
         Log.d(TAG, "limegoToAllAuth: " + 245);
+        handler.removeCallbacks(runnable);
+        handler.postDelayed(runnable,10 * 1000);
         goToPay("100");
     }
 

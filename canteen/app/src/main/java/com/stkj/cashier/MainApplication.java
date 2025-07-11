@@ -9,6 +9,8 @@ import android.util.Log;
 import com.stkj.cashier.base.device.DeviceManager;
 import com.stkj.cashier.base.glide.GlideAppHelper;
 import com.stkj.cashier.base.net.AppNetManager;
+import com.stkj.cashier.machine.utils.LedCtrlUtil;
+import com.stkj.cashier.machine.utils.SharePreUtil;
 import com.stkj.cashier.pay.model.ConsumeFoodBean;
 import com.stkj.cashier.pay.model.ConsumeFoodInfo;
 import com.stkj.cashier.pay.model.DeviceFoodConsumeParam;
@@ -32,6 +34,7 @@ import java.util.List;
 public class MainApplication extends Application {
 
     public static String createOrderNumber = "";
+    public static MainApplication instances;
     public static boolean isUnLockFrame = true;
     public static boolean isNeedCache = false;
     public static boolean isJuHePay = false;
@@ -47,8 +50,10 @@ public class MainApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        instances = this;
         Log.i("MainApplication", "----onCreate pid: " + Process.myPid());
-
+        SharePreUtil.getInstance();
+        LedCtrlUtil.getInstance();
         AppCommonConstants.APP_PREFIX_TAG = "canteen";
         AppManager.INSTANCE.init(this);
         if (!ProcessUtils.isMainProcess()) {

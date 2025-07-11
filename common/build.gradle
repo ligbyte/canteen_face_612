@@ -159,7 +159,7 @@ dependencies {
     api files('libs/tablayout_lib.aar')
     api files('libs/flowlayout-release.aar')
 
-    api "com.alibaba:fastjson:1.2.83"
+    api 'org.ligboy.retrofit2:converter-fastjson-android:2.1.0'
 
     //调试相关
     testImplementation 'junit:junit:4.13.2'

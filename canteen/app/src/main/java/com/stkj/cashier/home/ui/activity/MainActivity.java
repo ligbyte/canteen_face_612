@@ -86,6 +86,8 @@ import com.stkj.common.utils.KeyBoardUtils;
 import com.stkj.common.utils.TimeUtils;
 import com.stkj.deviceinterface.UsbDeviceHelper;
 import com.stkj.deviceinterface.callback.UsbDeviceListener;
+import com.youxin.myseriallib.bean.DeviceInitCallBlack;
+import com.youxin.myseriallib.serialDevices.YxDeviceSDK;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -126,9 +128,17 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         EventBus.getDefault().register(this);
-
+        try {
+//            YxDeviceSDK.InitSDK(this, DeviceManager.INSTANCE.getDeviceInterface().getMachineNumber(), new DeviceInitCallBlack() {
+//                @Override
+//                public void initStatus(boolean isInit, String message) {
+//                    Log.d("settingTAG", "isInit : " + isInit + "   mesg : " + message);
+//                }
+//            });
+        }catch (Exception e){
+            Log.e("settingTAG", "isInit : " + e.getMessage());
+        }
         Log.d(TAG, "limeMD5Utils: " + MD5Utils.encrypt("ly0379"));
 
 //        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -292,14 +302,14 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
                     }
                 });
 
-        vp2Content.setVisibility(View.INVISIBLE);
+//        vp2Content.setVisibility(View.INVISIBLE);
         flScreenWelcom.setVisibility(View.VISIBLE);
 
         flScreenWelcom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 flScreenWelcom.setVisibility(View.GONE);
-                vp2Content.setVisibility(View.VISIBLE);
+//                vp2Content.setVisibility(View.VISIBLE);
                 flScreenWelcom.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -742,11 +752,14 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
         Log.d(TAG, "limeonBindFragmentSwitchEvent 700 eventBus: " + eventBus.getPosition());
         vp2Content.setCurrentItem(eventBus.getPosition(), false);
         if (eventBus.getPosition() == 0){
+            htlConsumer.setVisibility(View.VISIBLE);
             flScreenWelcom.setVisibility(View.VISIBLE);
-            vp2Content.setVisibility(View.INVISIBLE);
+//            vp2Content.setVisibility(View.INVISIBLE);
+//            cbgCameraHelper.releaseCameraHelper();
         }else {
+            htlConsumer.setVisibility(View.GONE);
             flScreenWelcom.setVisibility(View.GONE);
-            vp2Content.setVisibility(View.VISIBLE);
+//            vp2Content.setVisibility(View.VISIBLE);
         }
     }
 

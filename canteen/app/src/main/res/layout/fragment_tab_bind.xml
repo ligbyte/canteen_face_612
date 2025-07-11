@@ -110,7 +110,6 @@
                     app:solidColorT="@color/color_F1F2F4"
                     android:visibility="gone"/>
 
-
             </LinearLayout>
 
         </com.stkj.common.ui.widget.shapelayout.ShapeFrameLayout>
