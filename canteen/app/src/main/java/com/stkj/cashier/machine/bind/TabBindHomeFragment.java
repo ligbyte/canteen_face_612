@@ -30,6 +30,7 @@ import com.stkj.cashier.pay.callback.OnConsumerModeListener;
 import com.stkj.cashier.pay.data.PayConstants;
 import com.stkj.cashier.pay.helper.ConsumerModeHelper;
 import com.stkj.cashier.pay.model.ChangeConsumerModeEvent;
+import com.stkj.cashier.pay.model.RefreshBindModeEvent;
 import com.stkj.cashier.pay.model.RefreshConsumerGoodsModeEvent;
 import com.stkj.cashier.pay.ui.fragment.AddGoodsFragment;
 import com.stkj.cashier.pay.ui.fragment.AmountConsumerFragment;
@@ -238,6 +239,12 @@ public class TabBindHomeFragment extends BasePayHelperFragment implements OnCons
         }
     }
 
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRefreshBindModeEvent(RefreshBindModeEvent eventBus) {
+        Log.d(TAG, "limegoToAllAuth: " + 245);
+        goToPay("100");
+    }
 
     @Override
     public void onChangeConsumerMode(int consumerMode, int lastConsumerMode) {

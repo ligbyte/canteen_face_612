@@ -60,6 +60,7 @@ import com.stkj.cashier.pay.helper.ConsumerModeHelper;
 import com.stkj.cashier.pay.model.BindFragmentBackEvent;
 import com.stkj.cashier.pay.model.BindFragmentSwitchEvent;
 import com.stkj.cashier.pay.model.FindViewResumeEvent;
+import com.stkj.cashier.pay.model.RefreshBindModeEvent;
 import com.stkj.cashier.pay.model.TTSSpeakEvent;
 import com.stkj.cashier.setting.data.ServerSettingMMKV;
 import com.stkj.cashier.setting.helper.AppUpgradeHelper;
@@ -299,6 +300,14 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
             public void onClick(View v) {
                 flScreenWelcom.setVisibility(View.GONE);
                 vp2Content.setVisibility(View.VISIBLE);
+                flScreenWelcom.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        EventBus.getDefault().post(new RefreshBindModeEvent(0));
+                    }
+                },50);
+
+
             }
         });
 
