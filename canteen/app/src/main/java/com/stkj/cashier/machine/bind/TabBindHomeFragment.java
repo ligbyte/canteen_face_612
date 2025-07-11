@@ -66,7 +66,6 @@ public class TabBindHomeFragment extends BasePayHelperFragment implements OnCons
 //    private CommonRecyclerAdapter mOrderAdapter;
     private ShapeFrameLayout sflConsumerContent;
     private FacePassCameraLayout fpcFace;
-    private BindingHomeTitleLayout htlConsumer;
 
     private ConsumerListener consumerListener;
     private OnConsumerConfirmListener facePassConfirmListener;
@@ -77,20 +76,13 @@ public class TabBindHomeFragment extends BasePayHelperFragment implements OnCons
     private ShapeTextView stvPayPrice;
     private ShapeTextView stv_pay_price_balance;
     private LinearLayout llTakeMealWay;
-    private TextView tv_show_total_count;
-    private TextView tv_show_yingshou;
-    private TextView tv_show_shishou;
     private ShapeTextView stvTakeMealByCode;
     private ShapeTextView stvTakeMealByPhone;
     private SimpleInputNumber sinNumber;
     private ShapeFrameLayout sflInputNumber;
     private CircleProgressBar pbConsumer;
     private ShapeTextView stvCancelPay;
-    private RecyclerView rv_goods_inventory_list;
-    private LinearLayout ll_inventory_list_empty;
     private Context context;
-    private FoodListShowAdapter foodListShowAdapter;
-    private ShapeFrameLayout sfl_goods_show_left;
     private int currentConsumerMode;
     private boolean isConsumerAuthTips;
 
@@ -111,20 +103,6 @@ public class TabBindHomeFragment extends BasePayHelperFragment implements OnCons
     private void findViews() {
         if (DeviceManager.INSTANCE.getDeviceInterface().getConsumeLayRes() != 2) {
 
-            sfl_goods_show_left = (ShapeFrameLayout) findViewById(R.id.sfl_goods_show_left);
-            tv_show_total_count = (TextView) findViewById(R.id.tv_show_total_count);
-            tv_show_yingshou = (TextView) findViewById(R.id.tv_show_yingshou);
-            tv_show_shishou = (TextView) findViewById(R.id.tv_show_shishou);
-
-            rv_goods_inventory_list = (RecyclerView) findViewById(R.id.rv_goods_inventory_list);
-            rv_goods_inventory_list.setLayoutManager(new LinearLayoutManager(context));
-            foodListShowAdapter = new FoodListShowAdapter(context);
-            rv_goods_inventory_list.setAdapter(foodListShowAdapter);
-            rv_goods_inventory_list.setItemAnimator(null);
-            rv_goods_inventory_list.setItemViewCacheSize(12);
-            rv_goods_inventory_list.setHasFixedSize(true);
-
-            ll_inventory_list_empty = (LinearLayout) findViewById(R.id.ll_inventory_list_empty);
 
 
             stvCancelPay = (ShapeTextView) findViewById(R.id.stv_cancel_pay);
@@ -133,37 +111,27 @@ public class TabBindHomeFragment extends BasePayHelperFragment implements OnCons
             sinNumber = (SimpleInputNumber) findViewById(R.id.sin_number);
             stvPayPrice = (ShapeTextView) findViewById(R.id.stv_pay_price);
             stv_pay_price_balance = (ShapeTextView) findViewById(R.id.stv_pay_price_balance);
-            htlConsumer = (BindingHomeTitleLayout) findViewById(R.id.htl_consumer);
             sflConsumerContent = (ShapeFrameLayout) findViewById(R.id.sfl_consumer_content);
             fpcFace = (FacePassCameraLayout) findViewById(R.id.fpc_face);
             llFaceConfirm = (LinearLayout) findViewById(R.id.ll_face_confirm);
             stvFaceLeftBt = (ShapeTextView) findViewById(R.id.stv_face_left_bt);
             stvFaceRightBt = (ShapeTextView) findViewById(R.id.stv_face_right_bt);
             if (currentConsumerMode == PayConstants.CONSUMER_GOODS_MODE){
-                sfl_goods_show_left.setVisibility(View.VISIBLE);
                 sflConsumerContent.setBackground(getResources().getDrawable(R.mipmap.goods_face_bg));
                 stvPayPrice.setSolidColor(Color.parseColor("#00000000"));
                 //sflConsumerContent.setRadius(getResources().getDimensionPixelSize(com.stkj.common.R.dimen.dp_5));
             }else {
-                sfl_goods_show_left.setVisibility(View.GONE);
                 sflConsumerContent.setBackground(null);
                 stvPayPrice.setSolidColor(Color.parseColor("#e9f3ff"));
                 //sflConsumerContent.setRadius(getResources().getDimensionPixelSize(com.stkj.common.R.dimen.dp_0));
             }
-
-
-            rv_goods_inventory_list.setVisibility(View.GONE);
-            ll_inventory_list_empty.setVisibility(View.VISIBLE);
-
         }
 
         if (consumerListener != null) {
             Log.d(TAG, "limefindViews: " + 187);
             consumerListener.onCreateFacePreviewView(fpcFace.getFacePreviewFace(), fpcFace.getIrPreviewFace());
         }
-//        if (consumerListener != null) {
-//            consumerListener.onCreateTitleLayout(htlConsumer);
-//        }
+
 //        sflOrderList = (ShapeFrameLayout) findViewById(R.id.sfl_order_list);
 //        rvGoodsList = (RecyclerView) findViewById(R.id.rv_goods_list);
 //        llFastPayPresentation = (LinearLayout) findViewById(R.id.ll_fast_pay_presentation);
@@ -449,27 +417,6 @@ public class TabBindHomeFragment extends BasePayHelperFragment implements OnCons
             llFaceConfirm.setVisibility(View.GONE);
             stvPayPrice.setText("¥ 0.00");
             stvPayPrice.setVisibility(View.GONE);
-            ConsumerModeHelper consumerModeHelper = new ConsumerModeHelper(AppManager.INSTANCE.getMainActivity());
-            currentConsumerMode = consumerModeHelper.getCurrentConsumerMode();
-            if (currentConsumerMode == PayConstants.CONSUMER_GOODS_MODE){
-                if (foodListShowAdapter != null && foodListShowAdapter.getData().size() > 0){
-                    //refreshTotalPrice();
-                }else {
-                    fpcFace.resetFaceInfoLayout();
-                    if (stv_pay_price_balance != null){
-                        stv_pay_price_balance.setVisibility(View.GONE);
-                    }
-                    Log.d(TAG, "limeresetFaceInfoLayout: " + 522);
-                }
-            }else {
-                fpcFace.resetFaceInfoLayout();
-                if (stv_pay_price_balance != null){
-                    stv_pay_price_balance.setVisibility(View.GONE);
-                }
-                Log.d(TAG, "limeresetFaceInfoLayout: " + 526);
-
-            }
-
         }
     }
 
