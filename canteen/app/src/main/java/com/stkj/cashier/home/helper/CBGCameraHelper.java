@@ -105,7 +105,6 @@ public class CBGCameraHelper extends ActivityWeakRefHolder {
         Log.i(TAG, "limegoToAllAuth: " + 105);
         if (cameraHelper != null) {
             if (cameraHelper.hasPreviewView()) {
-                Log.i(TAG, "limegoToAllAuth 108: " + (cameraHelper.getOnCameraHelperCallback() == null));
 //            cameraHelper.startPreview();
             } else {
                 Log.i(TAG, "limegoToAllAuth: " + 111);
@@ -141,9 +140,7 @@ public class CBGCameraHelper extends ActivityWeakRefHolder {
 
                             int orientation = DeviceManager.INSTANCE.getDeviceInterface().needUseCameraPreviewOrientation() ? previewOrientation : displayOrientation;
                             FacePassImage facePassImage = new FacePassImage(data, width, height, orientation, FacePassImageType.NV21);
-                            runUIThreadWithCheck(new Runnable() {
-                                @Override
-                                public void run() {
+
                                     Log.d(TAG, "limeonPreviewFrame: " + 138);
                                     if (isFaceDualCamera && !Build.MODEL.equals("rk3568_h09")) {
                                         Log.e(TAG, "limeonPreviewFrame: " + 140);
@@ -154,8 +151,6 @@ public class CBGCameraHelper extends ActivityWeakRefHolder {
 
 
                                     }
-                                }
-                            });
                         } catch (Throwable e) {
                             e.printStackTrace();
                         }

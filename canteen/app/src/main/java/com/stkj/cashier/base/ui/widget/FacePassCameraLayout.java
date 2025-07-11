@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
+import com.stkj.cashier.MainApplication;
 import com.stkj.cashier.R;
 import com.stkj.common.core.AppManager;
 import com.stkj.common.glide.GlideApp;
@@ -92,7 +93,18 @@ public class FacePassCameraLayout extends FrameLayout {
     public void setPreviewFace(boolean b) {
         isPreviewFace = b;
         if (isPreviewFace) {
-            ivDefaultFace.setImageResource(0);
+            //TODO: 延迟显示摄像头预览
+            if (MainApplication.isFirst) {
+                previewFace.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        MainApplication.isFirst = false;
+                            ivDefaultFace.setImageResource(0);
+                    }
+                }, 600);
+            }else {
+                    ivDefaultFace.setImageResource(0);
+            }
         } else {
             ivDefaultFace.setImageResource(R.mipmap.icon_welcome_consumer);
         }

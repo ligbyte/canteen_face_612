@@ -50,6 +50,7 @@
         android:layout_marginTop="@dimen/dp_7"
         android:text="欢迎光临！"
         android:textColor="@color/black"
+        android:visibility="gone"
         android:textSize="@dimen/sp_6" />
 
 </LinearLayout>

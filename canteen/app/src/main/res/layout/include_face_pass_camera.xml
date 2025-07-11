@@ -54,7 +54,8 @@
         android:layout_marginTop="@dimen/dp_11"
         android:drawablePadding="3dp"
         android:text="欢迎光临！"
-        android:textColor="@color/black"
-        android:textSize="@dimen/sp_12" />
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone"/>
 
 </LinearLayout>

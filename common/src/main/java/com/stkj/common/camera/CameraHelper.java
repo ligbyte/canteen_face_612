@@ -15,10 +15,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.exifinterface.media.ExifInterface;
 
+
+import com.alibaba.fastjson.JSON;
 import com.stkj.common.core.ActivityWeakRefHolder;
 import com.stkj.common.storage.StorageHelper;
 import com.stkj.common.ui.toast.AppToast;
-import com.stkj.common.ui.widget.surfaceview.AutoFitSurfaceView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,6 +29,7 @@ import java.util.List;
 /**
  * camera1帮助类
  */
+@SuppressWarnings("deprecation")
 public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder.Callback {
 
     private static final String TAG = "CameraHelper";
@@ -38,6 +40,10 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
     private SurfaceView mSurfaceView;
 
     private Camera mCamera;
+    private Camera.Parameters mParameters;
+    private int mPreviewWidth = 320; // default 1440
+    private int mPreviewHeight = 240; // default 1080
+    private float mPreviewScale = mPreviewHeight * 1f / mPreviewWidth;
     private MediaRecorder mMediaRecorder;
     private OnCameraHelperCallback onCameraHelperCallback;
 
@@ -77,6 +83,7 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
 
     @Override
     protected void onActivityPause() {
+        Log.e(TAG, "limeopenCamera onActivityPause 80: ");
         isPrepared = false;
         releaseMediaRecorder();
         releaseCamera();
@@ -91,14 +98,6 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
         }
     }
 
-
-    public void onResume() {
-        if (hasPreviewView()) {
-            Log.i(TAG, "onActivityResume");
-            prepare(mSurfaceView, isFrontCamera);
-        }
-    }
-
     public boolean hasPreviewView() {
         return mSurfaceView != null;
     }
@@ -108,10 +107,14 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
     }
 
     public void prepare(SurfaceView surfaceView, boolean isFrontCamera) {
+        try {
+            Log.d(TAG, "limeopenCamera prepare 105");
+
         Activity activityWithCheck = getHolderActivityWithCheck();
         if (activityWithCheck == null) {
             return;
         }
+            Log.d(TAG, "limeopenCamera prepare 110");
         if (mMediaRecorder != null) {
             releaseMediaRecorder();
         }
@@ -119,10 +122,6 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
         if (mCameraId != -1) {
             mCamera = openCameraById(mCameraId);
         } else {
-//            if (Build.MODEL.equals("rk3568_h09")) {
-//                openCameraById(0);
-//                return;
-//            }
             this.isFrontCamera = isFrontCamera;
             if (isFrontCamera) {
                 mCamera = openFrontCamera();
@@ -132,9 +131,15 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
                 mCamera = openBackCamera();
             }
         }
-        android.hardware.Camera.CameraInfo info =
-                new android.hardware.Camera.CameraInfo();
-        android.hardware.Camera.getCameraInfo(cameraId, info);
+            Log.d(TAG, "limeopenCamera prepare 127   + cameraId: " + cameraId);
+        Camera.CameraInfo info =
+                new Camera.CameraInfo();
+            Log.d(TAG, "limeopenCamera prepare 130");
+            if (cameraId == 1){
+                return;
+            }
+        Camera.getCameraInfo(cameraId, info);
+            Log.d(TAG, "limeopenCamera prepare 132");
         int rotation = activityWithCheck.getWindowManager().getDefaultDisplay()
                 .getRotation();
         int degrees = 0;
@@ -153,6 +158,7 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
                 break;
         }
         Log.i(TAG, "prepare degrees: " + degrees);
+            Log.d(TAG, "limeopenCamera prepare 149");
         int result;
         if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
             result = (info.orientation + degrees) % 360;
@@ -169,56 +175,94 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
             result = displayOrientation;
         }
         Log.i(TAG, "prepare displayOrientation: " + displayOrientation);
-        mCamera.setDisplayOrientation(result);
+            Log.d(TAG, "limeopenCamera prepare 166");
+        if (mCamera == null){
+            return;
+        }
+            Log.d(TAG, "limeopenCamera prepare 170");
+        mCamera.setDisplayOrientation(90);
         mSurfaceView = surfaceView;
         this.isFrontCamera = isFrontCamera;
         SurfaceHolder viewHolder = surfaceView.getHolder();
         viewHolder.addCallback(this);
-        try {
+            Log.d(TAG, "limeopenCamera prepare 176");
             if (!viewHolder.isCreating()) {
+                Log.d(TAG, "limeopenCamera prepare 178");
                 mCamera.setPreviewDisplay(viewHolder);
-                if (!Build.MODEL.equals("rk3568_h09")) {
-                    setCameraInitParams(surfaceView.getWidth(), surfaceView.getHeight());
-                }
+                Log.d(TAG, "limesetCameraInitParams : " + surfaceView.getWidth() + "  " + surfaceView.getHeight());
+                setCameraInitParams(64, 48);
+                Log.i(TAG, "limeopenCamera prapre 181");
                 mCamera.startPreview();
                 handlePreviewCallback();
+                Log.i(TAG, "limeopenCamera prapre 184");
                 isPrepared = true;
                 isFirstInit = false;
                 Log.i(TAG, "prepare viewHolder created");
             }
         } catch (Throwable e) {
-            e.printStackTrace();
-            AppToast.toastMsg("相机预览失败!");
+            Log.e(TAG, "limesetCameraInitParams openCameraById 189: " + e.getMessage());
+//            AppToast.toastMsg("相机预览失败!" + e.getMessage());
         }
     }
 
     private void setCameraInitParams(int width, int height) {
-        if (mCamera != null) {
-            Camera.Parameters parameters = mCamera.getParameters();
-            int[] bestPreviewSize = getBestPreviewSize(width, height);
-            parameters.setPreviewSize(bestPreviewSize[0], bestPreviewSize[1]);
-            List<String> focusModes = parameters.getSupportedFocusModes();
-            if (focusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
-                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
-            } else if (focusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-            } else if (focusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
-                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+
+
+        initCameraParameters();
+
+
+    }
+
+
+    private void initCameraParameters() {
+        Log.v(TAG, "initConfig");
+        try {
+            mParameters = mCamera.getParameters();
+            // 如果摄像头不支持这些参数都会出错的，所以设置的时候一定要判断是否支持
+            List<String> supportedFlashModes = mParameters.getSupportedFlashModes();
+            if (supportedFlashModes != null && supportedFlashModes.contains(Camera.Parameters.FLASH_MODE_OFF)) {
+                mParameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF); // 设置闪光模式
             }
-            //  设置预览照片的大小
-            List<Camera.Size> supportedPictureSizes =
-                    parameters.getSupportedPictureSizes();
-            if (!supportedPictureSizes.isEmpty()) {
-                // 获取支持保存图片的尺寸
-                Camera.Size pictureSize = supportedPictureSizes.get(0);
-                // 从List取出Size
-                parameters.setPictureSize(pictureSize.width, pictureSize.height);//
+            List<String> supportedFocusModes = mParameters.getSupportedFocusModes();
+            if (supportedFocusModes != null && supportedFocusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
+                mParameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO); // 设置聚焦模式
             }
-            mCamera.setParameters(parameters);
-            if (mSurfaceView instanceof AutoFitSurfaceView) {
-                ((AutoFitSurfaceView) mSurfaceView).setAspectRatio(bestPreviewSize[1], bestPreviewSize[0]);
+            mParameters.setPreviewFormat(ImageFormat.NV21); // 设置预览图片格式
+//            mParameters.setPictureFormat(ImageFormat.JPEG); // 设置拍照图片格式
+            mParameters.setExposureCompensation(0); // 设置曝光强度
+            Camera.Size previewSize = getSuitableSize(mParameters.getSupportedPreviewSizes());
+            mPreviewWidth = previewSize.width;
+            mPreviewHeight = previewSize.height;
+            mParameters.setPreviewSize(mPreviewWidth, mPreviewHeight); // 设置预览图片大小
+            Log.d(TAG, "limepreviewWidth: " + mPreviewWidth + ", previewHeight: " + mPreviewHeight);
+            Camera.Size pictureSize = getSuitableSize(mParameters.getSupportedPictureSizes());
+            mParameters.setPictureSize(pictureSize.width, pictureSize.height);
+            Log.d(TAG, "pictureWidth: " + pictureSize.width + ", pictureHeight: " + pictureSize.height);
+            mCamera.setParameters(mParameters); // 将设置好的parameters添加到相机里
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Camera.Size getSuitableSize(List<Camera.Size> sizes) {
+        int minDelta = Integer.MAX_VALUE; // 最小的差值，初始值应该设置大点保证之后的计算中会被重置
+        int index = 0; // 最小的差值对应的索引坐标
+        for (int i = 0; i < sizes.size(); i++) {
+            Camera.Size size = sizes.get(i);
+            Log.d(TAG, "limeSupportedSize, width: " + size.width + ", height: " + size.height);
+            // 先判断比例是否相等
+            if (size.width * mPreviewScale == size.height) {
+                int delta = Math.abs(mPreviewWidth - size.width);
+                if (delta == 0) {
+                    return size;
+                }
+                if (minDelta > delta) {
+                    minDelta = delta;
+                    index = i;
+                }
             }
         }
+        return sizes.get(index);
     }
 
     public int getPreviewOrientation() {
@@ -226,14 +270,6 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
     }
 
     public void setCameraHelperCallback(OnCameraHelperCallback onCameraHelperCallback) {
-        this.onCameraHelperCallback = onCameraHelperCallback;
-    }
-
-    public OnCameraHelperCallback getOnCameraHelperCallback() {
-        return onCameraHelperCallback;
-    }
-
-    public void setOnCameraHelperCallback(OnCameraHelperCallback onCameraHelperCallback) {
         this.onCameraHelperCallback = onCameraHelperCallback;
     }
 
@@ -285,7 +321,7 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
                             }
                             Log.i(TAG, "takePicture cache file: " + mCameraOutputPath);
                         } catch (Throwable e) {
-                            e.printStackTrace();
+                            Log.e("TAG", "limeException 286: " + e.getMessage());
                             if (onCameraHelperCallback != null) {
                                 onCameraHelperCallback.onTakePictureError(e.getMessage());
                             }
@@ -295,7 +331,7 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
                 });
             }
         } catch (Throwable e) {
-            e.printStackTrace();
+            Log.e("TAG", "limeException 296: " + e.getMessage());
             if (onCameraHelperCallback != null) {
                 onCameraHelperCallback.onTakePictureError(e.getMessage());
             }
@@ -357,7 +393,7 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
                 }
             }
         } catch (Throwable e) {
-            e.printStackTrace();
+            Log.e("TAG", "limeException 358: " + e.getMessage());
             releaseMediaRecorder();
             try {
                 if (mCamera != null) {
@@ -388,7 +424,7 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
                 Log.i(TAG, "pauseCaptureVideo MediaRecorder pause");
             }
         } catch (Throwable e) {
-            e.printStackTrace();
+            Log.e("TAG", "limeException 389: " + e.getMessage());
             Log.i(TAG, "pauseCaptureVideo error: " + e.getMessage());
         }
     }
@@ -409,7 +445,7 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
                 Log.i(TAG, "resumeCaptureVideo MediaRecorder resume");
             }
         } catch (Throwable e) {
-            e.printStackTrace();
+            Log.e("TAG", "limeException 410: " + e.getMessage());
             Log.i(TAG, "resumeCaptureVideo error: " + e.getMessage());
         }
     }
@@ -433,7 +469,7 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
                 Log.i(TAG, "stopCaptureVideo MediaRecorder stop and reset");
             }
         } catch (Throwable e) {
-            e.printStackTrace();
+            Log.e("TAG", "limeException 434: " + e.getMessage());
             if (onCameraHelperCallback != null) {
                 onCameraHelperCallback.onCaptureVideoError(e.getMessage());
             }
@@ -469,7 +505,7 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
                 Log.i(TAG, "stopPreview");
             }
         } catch (Throwable e) {
-            e.printStackTrace();
+            Log.e("TAG", "limeException 470: " + e.getMessage());
             Log.i(TAG, "stopPreview error: " + e.getMessage());
         }
         isPrepared = false;
@@ -484,19 +520,20 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
             if (mCamera != null) {
                 mCamera.startPreview();
                 handlePreviewCallback();
+                Log.i(TAG, "limeopenCamera startPreview 470");
                 Log.i(TAG, "startPreview");
                 isPrepared = true;
             }
         } catch (Throwable e) {
-            e.printStackTrace();
+            Log.e("TAG", "limeException 490: " + e.getMessage());
             Log.i(TAG, "startPreview error: " + e.getMessage());
         }
     }
 
     private void handlePreviewCallback() {
+        Log.i(TAG, "limeopenCamera handlePreviewCallback 479");
         if (needPreviewCallBack) {
             Log.i(TAG, "startPreview handlePreviewCallback" + this);
-
 
             if (callbackBuffer == null) {
                 Camera.Size previewSize = mCamera.getParameters().getPreviewSize();
@@ -504,11 +541,9 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
                         ImageFormat.getBitsPerPixel(ImageFormat.NV21)) / 8];
                 mCamera.addCallbackBuffer(callbackBuffer);
             }
-
             mCamera.setPreviewCallbackWithBuffer(new Camera.PreviewCallback() {
                 @Override
                 public void onPreviewFrame(byte[] data, Camera camera) {
-                    Log.d(TAG, "limeonPreviewFrame: " + 503);
                     camera.addCallbackBuffer(data);
                     if (onCameraHelperCallback != null) {
                         onCameraHelperCallback.onPreviewFrame(data, camera, displayOrientation, previewOrientation);
@@ -532,7 +567,7 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
                 Log.i(TAG, "releaseMediaRecorder");
             }
         } catch (Throwable e) {
-            e.printStackTrace();
+            Log.e("TAG", "limeException 528: " + e.getMessage());
             Log.i(TAG, "releaseMediaRecorder error: " + e.getMessage());
         }
         mMediaRecorder = null;
@@ -547,7 +582,7 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
                 Log.i(TAG, "releaseCamera");
             }
         } catch (Throwable e) {
-            e.printStackTrace();
+            Log.e("TAG", "limeException 543: " + e.getMessage());
             Log.i(TAG, "releaseCamera error: " + e.getMessage());
         }
         mCamera = null;
@@ -562,15 +597,15 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
         try {
-            Log.d(TAG, "limeopenCameraById 539: ====================================================" );
             mCamera.setPreviewDisplay(holder);
             mCamera.startPreview();
             handlePreviewCallback();
+            Log.i(TAG, "limeopenCamera surfaceCreated 546");
             isPrepared = true;
             Log.i(TAG, "surfaceCreated prepared");
         } catch (Throwable e) {
-            e.printStackTrace();
-            AppToast.toastMsg("相机预览失败!");
+            Log.e("TAG", "limeException 565: " + e.getMessage());
+            AppToast.toastMsg("相机预览失败!" + e.getMessage());
         }
     }
 
@@ -586,7 +621,7 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
         try {
             mCamera.stopPreview();
         } catch (Throwable e) {
-            e.printStackTrace();
+            Log.e("TAG", "limeException 582: " + e.getMessage());
             Log.i(TAG, "surfaceChanged mCamera.stopPreview error: " + e.getMessage());
         }
 
@@ -602,7 +637,7 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
             isFirstInit = false;
             Log.i(TAG, "surfaceChanged prepared");
         } catch (Throwable e) {
-            e.printStackTrace();
+            Log.e("TAG", "limeException 598: " + e.getMessage());
             Log.i(TAG, "surfaceChanged mCamera.setPreviewDisplay error:" + e.getMessage());
         }
     }
@@ -625,6 +660,7 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
     }
 
     private int[] getBestPreviewSize(int width, int height) {
+        Log.i(TAG, "getBestPreviewSize  init width: " + width + " height: " + height);
         int[] result = new int[]{width, height};
         if (mCamera != null) {
             final Camera.Parameters p = mCamera.getParameters();
@@ -647,32 +683,37 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
                 }
             }
         }
-        Log.i(TAG, "getBestPreviewSize width: " + width + " height: " + height + " result: " + Arrays.toString(result));
+        Log.i(TAG, "limesetCameraInitParams getBestPreviewSize width: " + width + " height: " + height + " result: " + Arrays.toString(result));
         return result;
     }
 
     public static Camera openCameraById(int cameraId) {
         Camera camera = null;
         try {
-            camera = Camera.open(cameraId); // attempt to get a Camera instance
-            Log.d(TAG, "limeopenCameraById 627: " + cameraId);
+            Log.i(TAG, "limeopenCamera openBackCamera 629------------------------------------");// attempt to get a Camera instance
+            camera = Camera.open(cameraId);
+
         } catch (Throwable e) {
-            e.printStackTrace();
-            AppToast.toastMsg("打开相机失败");
+            Log.e("TAG", "limeException 655: " + e.getMessage());
+            AppToast.toastMsg("打开相机失败" + e.getMessage());
+            Log.e(TAG, "limeopenCamera openCameraById 632: " + e.getMessage());
         }
         return camera;
     }
 
+
+
     public static Camera openBackCamera() {
         Camera camera = null;
         try {
+            Log.i(TAG, "limeopenCamera openBackCamera 641------------------------------------");// attempt to get a Camera instance
+            camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK);
+            Log.i(TAG, "limeopenCamera openBackCamera 645------------------------------------");
 
-            camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK); // attempt to get a Camera instance
-
-            Log.d(TAG, "limeopenCameraById 640: " + Camera.CameraInfo.CAMERA_FACING_BACK);
         } catch (Throwable e) {
-            e.printStackTrace();
-            AppToast.toastMsg("打开相机失败");
+            Log.e("TAG", "limeException 670: " + e.getMessage());
+            AppToast.toastMsg("打开相机失败" + e.getMessage());
+            Log.e(TAG, "limeopenCamera openCameraById 650: " + e.getMessage());
         }
         return camera;
     }
@@ -680,15 +721,15 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
     public static Camera openFrontCamera() {
         Camera camera = null;
         try {
-            if (!Build.MODEL.equals("rk3568_h09")) {
-                camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT); // attempt to get a Camera instance
-                Log.d(TAG, "limeopenCameraById 655: " + Camera.CameraInfo.CAMERA_FACING_FRONT);
-            }
+            Log.i(TAG, "limeopenCamera openBackCamera 655------------------------------------");// attempt to get a Camera instance
+            camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT);
 
         } catch (Throwable e) {
-            e.printStackTrace();
-            AppToast.toastMsg("打开相机失败");
+            Log.e("TAG", "limeException 684: " + e.getMessage());
+            AppToast.toastMsg("打开相机失败" + e.getMessage());
+            Log.e(TAG, "limeopenCamera openCameraById 655: " + e.getMessage());
         }
+
         return camera;
     }
 

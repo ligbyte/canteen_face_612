@@ -189,7 +189,7 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
         AppManager.INSTANCE.setMainActivity(this);
         readSaveInstanceState(savedInstanceState);
         setContentView(com.stkj.cashier.R.layout.activity_main);
-        ConsumerManager.INSTANCE.showConsumer(this, this);
+
         findViews();
         initApp();
         LogHelper.print("-main--getDisplayMetrics--" + getResources().getDisplayMetrics());
@@ -216,7 +216,7 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         if (needRestartConsumer) {
             needRestartConsumer = false;
-            ConsumerManager.INSTANCE.showConsumer(this, this);
+            ConsumerManager.INSTANCE.showConsumer(this,homeTabPageAdapter.getTabBindHomeFragment() , this);
         }
 //        EventBus.getDefault().post(new FindViewResumeEvent());
 //        try {
@@ -292,7 +292,7 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
                     }
                 });
 
-        vp2Content.setVisibility(View.GONE);
+        vp2Content.setVisibility(View.INVISIBLE);
         flScreenWelcom.setVisibility(View.VISIBLE);
 
         flScreenWelcom.setOnClickListener(new View.OnClickListener() {
@@ -303,9 +303,11 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
                 flScreenWelcom.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        ConsumerManager.INSTANCE.showConsumer(MainActivity.this,homeTabPageAdapter.getTabBindHomeFragment() ,MainActivity.this);
+                        homeTabPageAdapter.getTabBindHomeFragment().findViews();
                         EventBus.getDefault().post(new RefreshBindModeEvent(0));
                     }
-                },50);
+                },200);
 
 
             }
@@ -683,18 +685,18 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
         cbgCameraHelper.setPreviewView(previewView, irPreview, Build.MODEL.equals("rk3568_h09") ? true : isFaceDualCamera);
         //cbgCameraHelper.setPreviewView(previewView, irPreview, true);
         //异步初始化相机模块
-        Schedulers.io().scheduleDirect(new Runnable() {
-            @Override
-            public void run() {
-                try {
-
-                    cbgCameraHelper.prepareFacePassDetect();
-
-                } catch (Throwable e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+//        Schedulers.io().scheduleDirect(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//
+//                    //cbgCameraHelper.prepareFacePassDetect();
+//
+//                } catch (Throwable e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
     }
 
     @Override
@@ -741,7 +743,7 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
         vp2Content.setCurrentItem(eventBus.getPosition(), false);
         if (eventBus.getPosition() == 0){
             flScreenWelcom.setVisibility(View.VISIBLE);
-            vp2Content.setVisibility(View.GONE);
+            vp2Content.setVisibility(View.INVISIBLE);
         }else {
             flScreenWelcom.setVisibility(View.GONE);
             vp2Content.setVisibility(View.VISIBLE);

@@ -41,6 +41,7 @@ public class MainApplication extends Application {
     public static FoodConsumeDetailResponse foodConsumeDetailResponse;
     public static int width = 1920;
     public static int height = 1080;
+    public static boolean isFirst = true;
     public static boolean hasWeight = false;
 
     @Override
