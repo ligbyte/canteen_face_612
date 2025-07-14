@@ -130,16 +130,17 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
         try {
-//            YxDeviceSDK.InitSDK(this, DeviceManager.INSTANCE.getDeviceInterface().getMachineNumber(), new DeviceInitCallBlack() {
-//                @Override
-//                public void initStatus(boolean isInit, String message) {
-//                    Log.d("settingTAG", "isInit : " + isInit + "   mesg : " + message);
-//                }
-//            });
+            Log.e("settingTAG", "isInit SN: " + DeviceManager.INSTANCE.getDeviceInterface().getMachineNumber());
+            YxDeviceSDK.InitSDK(this, DeviceManager.INSTANCE.getDeviceInterface().getMachineNumber(), new DeviceInitCallBlack() {
+                @Override
+                public void initStatus(boolean isInit, String message) {
+                    Log.d("settingTAG", "isInit : " + isInit + "   mesg : " + message);
+                }
+            });
         }catch (Exception e){
             Log.e("settingTAG", "isInit : " + e.getMessage());
         }
-        Log.d(TAG, "limeMD5Utils: " + MD5Utils.encrypt("ly0379"));
+//        Log.d(TAG, "limeMD5Utils: " + MD5Utils.encrypt("ly0379"));
 
 //        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 //

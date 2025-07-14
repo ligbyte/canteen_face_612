@@ -38,10 +38,8 @@ android {
 
 dependencies {
     //串口编程sdk
-    implementation "io.github.xmaihh:serialport:${rootProject.serialportVersion}"
-    implementation files("libs/telpoLib_v2.10.20231110.aar")
-    implementation files("libs/icod_3.1.7.jar")
-    implementation files("libs/AclasDriverSdk.jar")
+//    implementation "io.github.xmaihh:serialport:${rootProject.serialportVersion}"
+//    implementation files('libs/deviceLib.aar')
     compileOnly project(':deviceinterface')
     compileOnly project(':common')
 }
