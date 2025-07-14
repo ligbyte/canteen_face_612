@@ -95,13 +95,13 @@ public class CBGCameraHelper extends ActivityWeakRefHolder {
             cameraHelper.setDisplayOrientation(cameraDisplayOrientation);
         }
         Log.i(TAG, "limegoToAllAuth: " + 97);
-        int irCameraDisplayOrientation = DeviceManager.INSTANCE.getDeviceInterface().getIRCameraDisplayOrientation();
-        if (irCameraHelper == null && isFaceDualCamera) {
-            irCameraHelper = new CameraHelper(activityWithCheck);
-            int irCameraId = DeviceManager.INSTANCE.getDeviceInterface().getIRCameraId();
-            cameraHelper.setCameraId(irCameraId);
-            irCameraHelper.setDisplayOrientation(irCameraDisplayOrientation);
-        }
+//        int irCameraDisplayOrientation = DeviceManager.INSTANCE.getDeviceInterface().getIRCameraDisplayOrientation();
+//        if (irCameraHelper == null && isFaceDualCamera) {
+//            irCameraHelper = new CameraHelper(activityWithCheck);
+//            int irCameraId = DeviceManager.INSTANCE.getDeviceInterface().getIRCameraId();
+//            cameraHelper.setCameraId(irCameraId);
+//            irCameraHelper.setDisplayOrientation(irCameraDisplayOrientation);
+//        }
         Log.i(TAG, "limegoToAllAuth: " + 105);
         if (cameraHelper != null) {
             if (cameraHelper.hasPreviewView()) {

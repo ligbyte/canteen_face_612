@@ -371,7 +371,7 @@ public abstract class DeviceInterface {
     }
 
     public int getBackCameraId() {
-        return -1;
+        return 0;
     }
 
     public int getFrontCameraId() {

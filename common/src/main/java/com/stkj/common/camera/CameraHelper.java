@@ -123,6 +123,7 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
             mCamera = openCameraById(mCameraId);
         } else {
             this.isFrontCamera = isFrontCamera;
+            Log.d(TAG, "limeopenCamera prepare 126   =============== isFrontCamera: " + isFrontCamera);
             if (isFrontCamera) {
                 mCamera = openFrontCamera();
                 cameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
@@ -190,7 +191,7 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
                 Log.d(TAG, "limeopenCamera prepare 178");
                 mCamera.setPreviewDisplay(viewHolder);
                 Log.d(TAG, "limesetCameraInitParams : " + surfaceView.getWidth() + "  " + surfaceView.getHeight());
-                setCameraInitParams(64, 48);
+                setCameraInitParams();
                 Log.i(TAG, "limeopenCamera prapre 181");
                 mCamera.startPreview();
                 handlePreviewCallback();
@@ -205,7 +206,7 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
         }
     }
 
-    private void setCameraInitParams(int width, int height) {
+    private void setCameraInitParams() {
 
 
         initCameraParameters();
@@ -631,7 +632,7 @@ public class CameraHelper extends ActivityWeakRefHolder implements SurfaceHolder
         // start preview with new settings
         try {
             mCamera.setPreviewDisplay(holder);
-            setCameraInitParams(width, height);
+            setCameraInitParams();
             startPreview();
             isPrepared = true;
             isFirstInit = false;

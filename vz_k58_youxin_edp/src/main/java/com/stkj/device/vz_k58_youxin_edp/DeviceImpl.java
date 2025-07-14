@@ -7,7 +7,6 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 
-import com.stkj.common.core.AppManager;
 import com.stkj.common.log.LogHelper;
 import com.stkj.common.ui.toast.AppToast;
 import com.stkj.deviceinterface.DeviceInterface;
@@ -20,9 +19,7 @@ import com.stkj.deviceinterface.callback.OnScanQRCodeListener;
 import com.stkj.deviceinterface.model.DeviceHardwareInfo;
 import com.stkj.deviceinterface.model.PrinterData;
 
-import java.io.File;
 import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -299,12 +296,12 @@ public class DeviceImpl extends DeviceInterface implements ScanKeyManager.OnScan
 
     @Override
     public int getBackCameraId() {
-        return 1;
+        return 0;
     }
 
     @Override
     public int getFrontCameraId() {
-        return 0;
+        return 1;
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.stkj.cashier.home.ui.activity;
 
+import static com.youxin.myseriallib.base.Constants.ReadDeviceType.READ_DEVICE3;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -25,21 +27,13 @@ import com.stkj.cashier.MainApplication;
 import com.stkj.cashier.R;
 import com.stkj.cashier.base.callback.AppNetCallback;
 import com.stkj.cashier.base.device.DeviceManager;
-import com.stkj.cashier.base.model.BaseResponse;
-import com.stkj.cashier.base.model.CommonSelectItem;
-import com.stkj.cashier.base.model.FaceChooseItemEntity;
 import com.stkj.cashier.base.net.AppNetManager;
 import com.stkj.cashier.base.permission.AppPermissionHelper;
 import com.stkj.cashier.base.tts.TTSVoiceHelper;
 import com.stkj.cashier.base.ui.dialog.CommonAlertDialogFragment;
-import com.stkj.cashier.base.ui.dialog.CommonBindAlertDialogFragment;
 import com.stkj.cashier.base.ui.dialog.CommonBindSignleAlertDialogFragment;
 import com.stkj.cashier.base.ui.dialog.CommonInputDialogFragment;
-import com.stkj.cashier.base.ui.dialog.CommonSelectDialogFragment;
-import com.stkj.cashier.base.ui.dialog.FaceChooseDialogFragment;
-import com.stkj.cashier.base.ui.dialog.OrderAlertDialogFragment;
 import com.stkj.cashier.base.utils.CommonDialogUtils;
-import com.stkj.cashier.base.utils.MD5Utils;
 import com.stkj.cashier.consumer.ConsumerManager;
 import com.stkj.cashier.consumer.callback.ConsumerListener;
 import com.stkj.cashier.home.callback.OnGetStoreInfoListener;
@@ -50,16 +44,13 @@ import com.stkj.cashier.home.helper.SystemEventWatcherHelper;
 import com.stkj.cashier.home.model.HomeMenuList;
 import com.stkj.cashier.home.model.HomeTabInfo;
 import com.stkj.cashier.home.model.StoreInfo;
-import com.stkj.cashier.home.service.HomeService;
 import com.stkj.cashier.home.ui.adapter.HomeTabPageAdapter;
 import com.stkj.cashier.home.ui.widget.BindingHomeTitleLayout;
-import com.stkj.cashier.home.ui.widget.HomeTabLayout;
 import com.stkj.cashier.home.ui.widget.HomeTitleLayout;
-import com.stkj.cashier.pay.data.PayConstants;
+import com.stkj.cashier.machine.utils.SharePreUtil;
 import com.stkj.cashier.pay.helper.ConsumerModeHelper;
 import com.stkj.cashier.pay.model.BindFragmentBackEvent;
 import com.stkj.cashier.pay.model.BindFragmentSwitchEvent;
-import com.stkj.cashier.pay.model.FindViewResumeEvent;
 import com.stkj.cashier.pay.model.RefreshBindModeEvent;
 import com.stkj.cashier.pay.model.TTSSpeakEvent;
 import com.stkj.cashier.setting.data.ServerSettingMMKV;
@@ -72,21 +63,21 @@ import com.stkj.cbgfacepass.permission.CBGPermissionRequest;
 import com.stkj.common.core.AppManager;
 import com.stkj.common.core.CountDownHelper;
 import com.stkj.common.log.LogHelper;
-import com.stkj.common.net.retrofit.RetrofitManager;
 import com.stkj.common.permissions.callback.PermissionCallback;
-import com.stkj.common.rx.AutoDisposeUtils;
-import com.stkj.common.rx.DefaultObserver;
-import com.stkj.common.rx.RxTransformerUtils;
 import com.stkj.common.ui.activity.BaseActivity;
 import com.stkj.common.ui.toast.AppToast;
 import com.stkj.common.utils.ActivityUtils;
 import com.stkj.common.utils.AndroidUtils;
 import com.stkj.common.utils.FileUtils;
 import com.stkj.common.utils.KeyBoardUtils;
-import com.stkj.common.utils.TimeUtils;
 import com.stkj.deviceinterface.UsbDeviceHelper;
 import com.stkj.deviceinterface.callback.UsbDeviceListener;
+import com.youxin.myseriallib.base.Constants;
+import com.youxin.myseriallib.bean.DeviceDataCallBlack;
 import com.youxin.myseriallib.bean.DeviceInitCallBlack;
+import com.youxin.myseriallib.bean.DeviceStatusListener;
+import com.youxin.myseriallib.bean.ReadCardResulBean;
+import com.youxin.myseriallib.serialDevices.YxDevicePortCtrl;
 import com.youxin.myseriallib.serialDevices.YxDeviceSDK;
 
 import org.greenrobot.eventbus.EventBus;
@@ -94,19 +85,13 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Handler;
 
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public class MainActivity extends BaseActivity implements AppNetCallback, ConsumerListener {
+public class MainActivity extends BaseActivity implements AppNetCallback, ConsumerListener , DeviceDataCallBlack<ReadCardResulBean>, DeviceStatusListener {
 
     public final static String TAG = "MainActivity";
     //当前TAB界面
@@ -124,22 +109,17 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
     private int saveStateCurrentTabPage;
     private long lastBackClickTime = 0;
     private CBGCameraHelper cbgCameraHelper;
+    private YxDeviceSDK yxDeviceSDK;
+    private YxDevicePortCtrl yxDevicePortCtrl;
+    private String currentTrayNo;
+    private int lossCount;
+    private int totalCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
-        try {
-            Log.e("settingTAG", "isInit SN: " + DeviceManager.INSTANCE.getDeviceInterface().getMachineNumber());
-            YxDeviceSDK.InitSDK(this, DeviceManager.INSTANCE.getDeviceInterface().getMachineNumber(), new DeviceInitCallBlack() {
-                @Override
-                public void initStatus(boolean isInit, String message) {
-                    Log.d("settingTAG", "isInit : " + isInit + "   mesg : " + message);
-                }
-            });
-        }catch (Exception e){
-            Log.e("settingTAG", "isInit : " + e.getMessage());
-        }
+
 //        Log.d(TAG, "limeMD5Utils: " + MD5Utils.encrypt("ly0379"));
 
 //        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -205,6 +185,20 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
         initApp();
         LogHelper.print("-main--getDisplayMetrics--" + getResources().getDisplayMetrics());
 
+    }
+
+    private void openYxDeviceSDK() {
+        yxDeviceSDK = new YxDeviceSDK();
+        if (yxDeviceSDK != null && (yxDevicePortCtrl == null || !yxDevicePortCtrl.isOpen())) {
+            Constants.ReadDeviceType readDeviceType = READ_DEVICE3;
+            String readCardSerialPath = "/dev/ttyS8";
+            Log.d(TAG, "limecode readCardSerialPath: " + readCardSerialPath);
+            if (TextUtils.isEmpty(readCardSerialPath)) {
+                yxDevicePortCtrl = yxDeviceSDK.openReadCardDevice(readDeviceType, this, this);
+            }else{
+                yxDevicePortCtrl = yxDeviceSDK.openReadCardDevice(readDeviceType, readCardSerialPath, this, this);
+            }
+        }
     }
 
     @Override
@@ -318,12 +312,31 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
                         homeTabPageAdapter.getTabBindHomeFragment().findViews();
                         EventBus.getDefault().post(new RefreshBindModeEvent(0));
                     }
-                },200);
+                },50);
 
 
             }
         });
 
+
+
+        try {
+            Log.e("settingTAG", "isInit SN: " + DeviceManager.INSTANCE.getDeviceInterface().getMachineNumber());
+            YxDeviceSDK.InitSDK(this, DeviceManager.INSTANCE.getDeviceInterface().getMachineNumber(), new DeviceInitCallBlack() {
+                @Override
+                public void initStatus(boolean isInit, String message) {
+                    Log.d("settingTAG", "isInit : " + isInit + "   mesg : " + message);
+                    flScreenWelcom.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            openYxDeviceSDK();
+                        }
+                    },6 * 1000);
+                }
+            });
+        }catch (Exception e){
+            Log.e("settingTAG", "isInit : " + e.getMessage());
+        }
     }
 
 
@@ -753,8 +766,16 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
         Log.d(TAG, "limeonBindFragmentSwitchEvent 700 eventBus: " + eventBus.getPosition());
         vp2Content.setCurrentItem(eventBus.getPosition(), false);
         if (eventBus.getPosition() == 0){
+            MainApplication.barcode = "";
             htlConsumer.setVisibility(View.VISIBLE);
             flScreenWelcom.setVisibility(View.VISIBLE);
+            flScreenWelcom.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    openYxDeviceSDK();
+                }
+            },1 * 1000);
+//            openYxDeviceSDK();
 //            vp2Content.setVisibility(View.INVISIBLE);
 //            cbgCameraHelper.releaseCameraHelper();
         }else {
@@ -779,5 +800,96 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
                 baseActivity.getWeakRefHolder(TTSVoiceHelper.class).speakByTTSVoice(eventBus.getContent());
             }
         }
+    }
+
+    @Override
+    public void onDataResult(ReadCardResulBean resulBean) {
+        boolean trakCardStatus = resulBean.isTrakCardStatus();
+        if (trakCardStatus){
+
+            final String message = resulBean.getTrakCardNo();
+
+            if (!TextUtils.equals(currentTrayNo, message) && !TextUtils.isEmpty(message)){
+                currentTrayNo = message;
+                lossCount = 0;
+                totalCount = 0;
+            }
+
+            if (!TextUtils.isEmpty(currentTrayNo)){
+                if (!TextUtils.isEmpty(message)) {
+                    totalCount++;
+                }else{
+                    lossCount++;
+                }
+            }
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    String line = "limeCardResult : card : "+ message;
+                    Log.d(TAG, "limeCardResult : card : "+ message);
+                    if (yxDevicePortCtrl != null && yxDevicePortCtrl.isOpen()){
+                        yxDevicePortCtrl.closeDevice();
+                    }
+                    if (vp2Content.getCurrentItem() == 0){
+                        MainApplication.barcode = message;
+                        flScreenWelcom.setVisibility(View.GONE);
+                        flScreenWelcom.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                ConsumerManager.INSTANCE.showConsumer(MainActivity.this,homeTabPageAdapter.getTabBindHomeFragment() ,MainActivity.this);
+                                homeTabPageAdapter.getTabBindHomeFragment().findViews();
+                                homeTabPageAdapter.getTabBindHomeFragment().onRefreshBindModeEvent(new RefreshBindModeEvent(0));
+                            }
+                        },100);
+                    }
+
+                }
+            });
+
+        }else{
+
+            byte icCardType = resulBean.getIcCardType();
+
+            final String message = resulBean.getIcCardNo();
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    String line = "CardResult :   IC card : "+ message;
+
+//                    addLogLine(line);
+                }
+            });
+
+        }
+    }
+
+    @Override
+    public void onReceiveTimeOut() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String line = "CardResult :  Receive TimeOut ";
+                //addLogLine(line);
+            }
+        });
+    }
+
+    @Override
+    public void onConnectSuccess() {
+
+    }
+
+    @Override
+    public void onConnectFail(String s) {
+
+    }
+
+    @Override
+    public void onClose() {
+
     }
 }

@@ -7,6 +7,7 @@ import java.util.List;
 
 public class ParseData {
 
+
     private static final String DEFAULT_ROOT_VALUE_SEPARATOR = " ";
 
     public static String decodeHexStringIdcard2Int(String str) {
