@@ -9,10 +9,9 @@ import com.stkj.cashier.MainApplication;
 import com.stkj.cashier.base.callback.OnConsumerConfirmListener;
 import com.stkj.cashier.base.utils.PriceUtils;
 import com.stkj.cashier.consumer.ConsumerManager;
-import com.stkj.cashier.home.ui.activity.MainActivity;
+import com.stkj.cashier.home.ui.activity.MainBindActivity;
 import com.stkj.cashier.pay.callback.OnPayListener;
 import com.stkj.cashier.pay.data.PayConstants;
-import com.stkj.cashier.pay.helper.ConsumerModeHelper;
 import com.stkj.cashier.pay.helper.PayHelper;
 import com.stkj.cashier.pay.model.ConsumerSuccessEvent;
 import com.stkj.cashier.pay.model.ModifyBalanceResult;
@@ -20,7 +19,6 @@ import com.stkj.cashier.setting.data.PaymentSettingMMKV;
 import com.stkj.cashier.setting.data.TTSSettingMMKV;
 import com.stkj.cashier.setting.model.FacePassPeopleInfo;
 import com.stkj.cbgfacepass.CBGFacePassHandlerHelper;
-import com.stkj.common.core.AppManager;
 import com.stkj.common.log.LogHelper;
 import com.stkj.common.rx.AutoDisposeUtils;
 import com.stkj.common.rx.DefaultDisposeObserver;
@@ -88,8 +86,8 @@ public abstract class BasePayHelperFragment extends IdentityVerificationFragment
             return PAYING_TO_PAY;
         }
         LogHelper.print("--BasePayHelperFragment--goToPay");
-        if (mActivity instanceof MainActivity) {
-            ((MainActivity) mActivity).clearMainFocus();
+        if (mActivity instanceof MainBindActivity) {
+            ((MainBindActivity) mActivity).clearMainFocus();
         }
         int deductionType = getDeductionType();
         double parsePrice = PriceUtils.parsePrice(realPayMoney);

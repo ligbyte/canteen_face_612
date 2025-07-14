@@ -10,9 +10,8 @@ import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
 
-import com.stkj.cashier.R;
 import com.stkj.cashier.base.receiver.AppCommonReceiver;
-import com.stkj.cashier.home.ui.activity.MainActivity;
+import com.stkj.cashier.home.ui.activity.MainBindActivity;
 
 /**
  * 快捷方式工具类
@@ -21,7 +20,7 @@ public class ShutCutIconUtils {
 
     public static void addShortCutCompact(Context context) {
         if (ShortcutManagerCompat.isRequestPinShortcutSupported(context)) {
-            Intent shortcutInfoIntent = new Intent(context, MainActivity.class);
+            Intent shortcutInfoIntent = new Intent(context, MainBindActivity.class);
             shortcutInfoIntent.setAction(Intent.ACTION_VIEW); //action必须设置，不然报错
 
             Bitmap appIcon = BitmapFactory.decodeResource(context.getResources(), com.stkj.cashier.R.mipmap.icon_launcher);

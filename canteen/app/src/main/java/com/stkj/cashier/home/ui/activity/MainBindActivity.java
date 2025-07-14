@@ -47,7 +47,6 @@ import com.stkj.cashier.home.model.StoreInfo;
 import com.stkj.cashier.home.ui.adapter.HomeTabPageAdapter;
 import com.stkj.cashier.home.ui.widget.BindingHomeTitleLayout;
 import com.stkj.cashier.home.ui.widget.HomeTitleLayout;
-import com.stkj.cashier.machine.utils.SharePreUtil;
 import com.stkj.cashier.pay.helper.ConsumerModeHelper;
 import com.stkj.cashier.pay.model.BindFragmentBackEvent;
 import com.stkj.cashier.pay.model.BindFragmentSwitchEvent;
@@ -91,7 +90,7 @@ import java.util.List;
 
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public class MainActivity extends BaseActivity implements AppNetCallback, ConsumerListener , DeviceDataCallBlack<ReadCardResulBean>, DeviceStatusListener {
+public class MainBindActivity extends BaseActivity implements AppNetCallback, ConsumerListener , DeviceDataCallBlack<ReadCardResulBean>, DeviceStatusListener {
 
     public final static String TAG = "MainActivity";
     //当前TAB界面
@@ -258,7 +257,7 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
             @Override
             public void onInitError(String msg) {
                 hideLoadingDialog();
-                CommonDialogUtils.showTipsBindDialog(MainActivity.this, "提示",msg, "知道了", new CommonBindSignleAlertDialogFragment.OnSweetClickListener() {
+                CommonDialogUtils.showTipsBindDialog(MainBindActivity.this, "提示",msg, "知道了", new CommonBindSignleAlertDialogFragment.OnSweetClickListener() {
                     @Override
                     public void onClick(CommonBindSignleAlertDialogFragment alertDialogFragment) {
                         initData();
@@ -288,7 +287,7 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
 
                     @Override
                     public void onCancel() {
-                        CommonDialogUtils.showTipsDialog(MainActivity.this, "人脸识别功能请求系统权限失败", "知道了", new CommonAlertDialogFragment.OnSweetClickListener() {
+                        CommonDialogUtils.showTipsDialog(MainBindActivity.this, "人脸识别功能请求系统权限失败", "知道了", new CommonAlertDialogFragment.OnSweetClickListener() {
                             @Override
                             public void onClick(CommonAlertDialogFragment alertDialogFragment) {
                                 initData();
@@ -386,18 +385,18 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
                                 }
                             })
                             .setRightNavTxt("确定")
-                            .show(MainActivity.this);
+                            .show(MainBindActivity.this);
                 } else {
                     commonAlertDialogFragment.setLeftNavTxt("关闭App")
                             .setLeftNavClickListener(new CommonAlertDialogFragment.OnSweetClickListener() {
                                 @Override
                                 public void onClick(CommonAlertDialogFragment alertDialogFragment) {
                                     DeviceManager.INSTANCE.getDeviceInterface().release();
-                                    AndroidUtils.killApp(MainActivity.this);
+                                    AndroidUtils.killApp(MainBindActivity.this);
                                 }
                             })
                             .setRightNavTxt("确定")
-                            .show(MainActivity.this);
+                            .show(MainBindActivity.this);
                 }
                 return true;
             }
@@ -425,7 +424,7 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
                             rootPlaceHolderView.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    KeyBoardUtils.hideSoftKeyboard(MainActivity.this, rootPlaceHolderView);
+                                    KeyBoardUtils.hideSoftKeyboard(MainBindActivity.this, rootPlaceHolderView);
                                     rootPlaceHolderView.setOnClickListener(null);
                                     rootPlaceHolderView.setClickable(false);
                                     clearMainFocus();
@@ -515,17 +514,17 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
                             showInputServerAddressDialog();
                         }
                     })
-                    .show(MainActivity.this);
+                    .show(MainBindActivity.this);
         } else {
             commonAlertDialogFragment.setRightNavTxt("关闭App")
                     .setRightNavClickListener(new CommonAlertDialogFragment.OnSweetClickListener() {
                         @Override
                         public void onClick(CommonAlertDialogFragment alertDialogFragment) {
                             DeviceManager.INSTANCE.getDeviceInterface().release();
-                            AndroidUtils.killApp(MainActivity.this);
+                            AndroidUtils.killApp(MainBindActivity.this);
                         }
                     })
-                    .show(MainActivity.this);
+                    .show(MainBindActivity.this);
         }
     }
 
@@ -538,7 +537,7 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
                 .setOnInputListener(new CommonInputDialogFragment.OnInputListener() {
                     @Override
                     public void onInputEnd(String input) {
-                        ServerSettingMMKV.handleChangeServerAddress(MainActivity.this, input);
+                        ServerSettingMMKV.handleChangeServerAddress(MainBindActivity.this, input);
                     }
                 }).show(this);
     }
@@ -829,7 +828,7 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
                         flScreenWelcom.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                ConsumerManager.INSTANCE.showConsumer(MainActivity.this,homeTabPageAdapter.getTabBindHomeFragment() ,MainActivity.this);
+                                ConsumerManager.INSTANCE.showConsumer(MainBindActivity.this,homeTabPageAdapter.getTabBindHomeFragment() , MainBindActivity.this);
                                 homeTabPageAdapter.getTabBindHomeFragment().findViews();
                                 homeTabPageAdapter.getTabBindHomeFragment().onRefreshBindModeEvent(new RefreshBindModeEvent(0));
                             }

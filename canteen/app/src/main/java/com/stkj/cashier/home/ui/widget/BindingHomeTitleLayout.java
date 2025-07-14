@@ -19,26 +19,20 @@ import com.stkj.cashier.BuildConfig;
 import com.stkj.cashier.R;
 import com.stkj.cashier.base.device.DeviceManager;
 import com.stkj.cashier.base.ui.dialog.BindingPwdAlertDialogFragment;
-import com.stkj.cashier.base.ui.dialog.CommonAlertDialogFragment;
 import com.stkj.cashier.base.utils.CommonDialogUtils;
 import com.stkj.cashier.home.callback.OnGetStoreInfoListener;
 import com.stkj.cashier.home.helper.SystemEventWatcherHelper;
 import com.stkj.cashier.home.model.StoreInfo;
-import com.stkj.cashier.home.ui.activity.MainActivity;
 import com.stkj.cashier.pay.callback.OnConsumerModeListener;
 import com.stkj.cashier.pay.data.PayConstants;
 import com.stkj.cashier.pay.helper.ConsumerModeHelper;
-import com.stkj.cashier.pay.model.BindFragmentSwitchEvent;
 import com.stkj.cashier.setting.helper.StoreInfoHelper;
 import com.stkj.common.core.ActivityHolderFactory;
 import com.stkj.common.core.AppManager;
 import com.stkj.common.log.LogHelper;
-import com.stkj.common.ui.toast.AppToast;
 import com.stkj.common.ui.widget.shapelayout.ShapeTextView;
 import com.stkj.common.utils.IntentUtils;
 import com.stkj.common.utils.NetworkUtils;
-
-import org.greenrobot.eventbus.EventBus;
 
 /**
  * 首页顶部title
