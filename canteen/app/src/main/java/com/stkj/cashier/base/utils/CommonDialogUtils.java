@@ -16,7 +16,7 @@ import com.stkj.common.utils.AndroidUtils;
 public class CommonDialogUtils {
 
     public static void showTipsDialog(Context context, String msg) {
-        CommonAlertDialogFragment.build()
+        CommonBindSignleAlertDialogFragment.build()
                 .setAlertTitleTxt("提示")
                 .setAlertContentTxt(msg)
                 .show(context);

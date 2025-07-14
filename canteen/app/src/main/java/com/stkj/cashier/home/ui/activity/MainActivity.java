@@ -623,17 +623,7 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
         //初始化语音
         TTSVoiceHelper ttsVoiceHelper = getWeakRefHolder(TTSVoiceHelper.class);
         ttsVoiceHelper.initTTSVoice(null);
-        //屏幕保护程序
-//        ScreenProtectHelper screenProtectHelper = getWeakRefHolder(ScreenProtectHelper.class);
-//        screenProtectHelper.setOnScreenProtectListener(new ScreenProtectHelper.OnScreenProtectListener() {
-//            @Override
-//            public void onNeedScreenProtect() {
-//                if (!isSoftKeyboardShow) {
-//                    flScreenProtect.setVisibility(View.VISIBLE);
-//                }
-//            }
-//        });
-//        countDownHelper.addCountDownListener(screenProtectHelper);
+
         //网络状态回调
         SystemEventWatcherHelper systemEventWatcherHelper = getWeakRefHolder(SystemEventWatcherHelper.class);
         countDownHelper.addCountDownListener(systemEventWatcherHelper);
@@ -777,6 +767,9 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
 //            vp2Content.setVisibility(View.INVISIBLE);
 //            cbgCameraHelper.releaseCameraHelper();
         }else {
+            if (yxDevicePortCtrl != null && yxDevicePortCtrl.isOpen()){
+                yxDevicePortCtrl.closeDevice();
+            }
             htlConsumer.setVisibility(View.GONE);
             flScreenWelcom.setVisibility(View.GONE);
 //            vp2Content.setVisibility(View.VISIBLE);
