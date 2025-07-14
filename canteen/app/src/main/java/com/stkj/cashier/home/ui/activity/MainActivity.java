@@ -300,26 +300,25 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
 //        vp2Content.setVisibility(View.INVISIBLE);
         flScreenWelcom.setVisibility(View.VISIBLE);
 
-        flScreenWelcom.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                flScreenWelcom.setVisibility(View.GONE);
-//                vp2Content.setVisibility(View.VISIBLE);
-                flScreenWelcom.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        ConsumerManager.INSTANCE.showConsumer(MainActivity.this,homeTabPageAdapter.getTabBindHomeFragment() ,MainActivity.this);
-                        homeTabPageAdapter.getTabBindHomeFragment().findViews();
-                        EventBus.getDefault().post(new RefreshBindModeEvent(0));
-                    }
-                },50);
+//        flScreenWelcom.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                flScreenWelcom.setVisibility(View.GONE);
+//                flScreenWelcom.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        ConsumerManager.INSTANCE.showConsumer(MainActivity.this,homeTabPageAdapter.getTabBindHomeFragment() ,MainActivity.this);
+//                        homeTabPageAdapter.getTabBindHomeFragment().findViews();
+//                        EventBus.getDefault().post(new RefreshBindModeEvent(0));
+//                    }
+//                },50);
+//
+//
+//            }
+//        });
+    }
 
-
-            }
-        });
-
-
-
+    private void initYxSDK() {
         try {
             Log.e("settingTAG", "isInit SN: " + DeviceManager.INSTANCE.getDeviceInterface().getMachineNumber());
             YxDeviceSDK.InitSDK(this, DeviceManager.INSTANCE.getDeviceInterface().getMachineNumber(), new DeviceInitCallBlack() {
@@ -331,15 +330,13 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
                         public void run() {
                             openYxDeviceSDK();
                         }
-                    },6 * 1000);
+                    },1 * 1000);
                 }
             });
         }catch (Exception e){
             Log.e("settingTAG", "isInit : " + e.getMessage());
         }
     }
-
-
 
 
     /**
@@ -480,6 +477,7 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
     }
 
     private void initData() {
+        initYxSDK();
         initHomeContent();
     }
 
