@@ -4,9 +4,14 @@ import static com.youxin.myseriallib.base.Constants.ReadDeviceType.READ_DEVICE3;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.hardware.usb.UsbDevice;
+import android.icu.util.Calendar;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -90,7 +95,7 @@ import java.util.List;
 
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public class MainBindActivity extends BaseActivity implements AppNetCallback, ConsumerListener , DeviceDataCallBlack<ReadCardResulBean>, DeviceStatusListener {
+public class MainActivity extends BaseActivity implements AppNetCallback, ConsumerListener , DeviceDataCallBlack<ReadCardResulBean>, DeviceStatusListener {
 
     public final static String TAG = "MainActivity";
     //当前TAB界面
@@ -99,7 +104,7 @@ public class MainBindActivity extends BaseActivity implements AppNetCallback, Co
     private ViewPager2 vp2Content;
     private FrameLayout flScreenWelcom;
     private HomeTabPageAdapter homeTabPageAdapter;
-    private BindingHomeTitleLayout htlConsumer;
+    private static BindingHomeTitleLayout htlConsumer;
     //是否需要重新恢复消费者页面
     private boolean needRestartConsumer;
     //是否初始化了菜单数据
@@ -257,7 +262,7 @@ public class MainBindActivity extends BaseActivity implements AppNetCallback, Co
             @Override
             public void onInitError(String msg) {
                 hideLoadingDialog();
-                CommonDialogUtils.showTipsBindDialog(MainBindActivity.this, "提示",msg, "知道了", new CommonBindSignleAlertDialogFragment.OnSweetClickListener() {
+                CommonDialogUtils.showTipsBindDialog(MainActivity.this, "提示",msg, "知道了", new CommonBindSignleAlertDialogFragment.OnSweetClickListener() {
                     @Override
                     public void onClick(CommonBindSignleAlertDialogFragment alertDialogFragment) {
                         initData();
@@ -287,7 +292,7 @@ public class MainBindActivity extends BaseActivity implements AppNetCallback, Co
 
                     @Override
                     public void onCancel() {
-                        CommonDialogUtils.showTipsDialog(MainBindActivity.this, "人脸识别功能请求系统权限失败", "知道了", new CommonAlertDialogFragment.OnSweetClickListener() {
+                        CommonDialogUtils.showTipsDialog(MainActivity.this, "人脸识别功能请求系统权限失败", "知道了", new CommonAlertDialogFragment.OnSweetClickListener() {
                             @Override
                             public void onClick(CommonAlertDialogFragment alertDialogFragment) {
                                 initData();
@@ -329,7 +334,7 @@ public class MainBindActivity extends BaseActivity implements AppNetCallback, Co
                         public void run() {
                             openYxDeviceSDK();
                         }
-                    },1 * 1000);
+                    },3 * 1000);
                 }
             });
         }catch (Exception e){
@@ -385,18 +390,18 @@ public class MainBindActivity extends BaseActivity implements AppNetCallback, Co
                                 }
                             })
                             .setRightNavTxt("确定")
-                            .show(MainBindActivity.this);
+                            .show(MainActivity.this);
                 } else {
                     commonAlertDialogFragment.setLeftNavTxt("关闭App")
                             .setLeftNavClickListener(new CommonAlertDialogFragment.OnSweetClickListener() {
                                 @Override
                                 public void onClick(CommonAlertDialogFragment alertDialogFragment) {
                                     DeviceManager.INSTANCE.getDeviceInterface().release();
-                                    AndroidUtils.killApp(MainBindActivity.this);
+                                    AndroidUtils.killApp(MainActivity.this);
                                 }
                             })
                             .setRightNavTxt("确定")
-                            .show(MainBindActivity.this);
+                            .show(MainActivity.this);
                 }
                 return true;
             }
@@ -424,7 +429,7 @@ public class MainBindActivity extends BaseActivity implements AppNetCallback, Co
                             rootPlaceHolderView.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    KeyBoardUtils.hideSoftKeyboard(MainBindActivity.this, rootPlaceHolderView);
+                                    KeyBoardUtils.hideSoftKeyboard(MainActivity.this, rootPlaceHolderView);
                                     rootPlaceHolderView.setOnClickListener(null);
                                     rootPlaceHolderView.setClickable(false);
                                     clearMainFocus();
@@ -478,6 +483,7 @@ public class MainBindActivity extends BaseActivity implements AppNetCallback, Co
     private void initData() {
         initYxSDK();
         initHomeContent();
+        initMinuteAlarm();
     }
 
     @Override
@@ -514,17 +520,17 @@ public class MainBindActivity extends BaseActivity implements AppNetCallback, Co
                             showInputServerAddressDialog();
                         }
                     })
-                    .show(MainBindActivity.this);
+                    .show(MainActivity.this);
         } else {
             commonAlertDialogFragment.setRightNavTxt("关闭App")
                     .setRightNavClickListener(new CommonAlertDialogFragment.OnSweetClickListener() {
                         @Override
                         public void onClick(CommonAlertDialogFragment alertDialogFragment) {
                             DeviceManager.INSTANCE.getDeviceInterface().release();
-                            AndroidUtils.killApp(MainBindActivity.this);
+                            AndroidUtils.killApp(MainActivity.this);
                         }
                     })
-                    .show(MainBindActivity.this);
+                    .show(MainActivity.this);
         }
     }
 
@@ -537,7 +543,7 @@ public class MainBindActivity extends BaseActivity implements AppNetCallback, Co
                 .setOnInputListener(new CommonInputDialogFragment.OnInputListener() {
                     @Override
                     public void onInputEnd(String input) {
-                        ServerSettingMMKV.handleChangeServerAddress(MainBindActivity.this, input);
+                        ServerSettingMMKV.handleChangeServerAddress(MainActivity.this, input);
                     }
                 }).show(this);
     }
@@ -747,6 +753,39 @@ public class MainBindActivity extends BaseActivity implements AppNetCallback, Co
         return null;
     }
 
+    private AlarmManager mAlarmManager;
+    private PendingIntent mPendingIntent;
+
+    // 初始化监听
+    private void initMinuteAlarm() {
+        mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, MinuteReceiver.class);
+        mPendingIntent = PendingIntent.getBroadcast(
+                this, 0, intent, PendingIntent.FLAG_IMMUTABLE
+        );
+
+        // 设定每分钟0秒时触发
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.add(Calendar.MINUTE, 1); // 从下一分钟开始
+
+        // 设置重复闹钟（API 19+ 会对齐到系统唤醒周期，保证低功耗）
+        mAlarmManager.setRepeating(
+                AlarmManager.RTC_WAKEUP, // 实时时钟，唤醒设备
+                calendar.getTimeInMillis(),
+                60 * 1000, // 间隔1分钟
+                mPendingIntent
+        );
+    }
+
+    // 自定义广播接收器，接收分钟变化事件
+    public static class MinuteReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            htlConsumer.onDateChange();
+        }
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBindFragmentSwitchEvent(BindFragmentSwitchEvent eventBus) {
@@ -825,10 +864,11 @@ public class MainBindActivity extends BaseActivity implements AppNetCallback, Co
                     if (vp2Content.getCurrentItem() == 0){
                         MainApplication.barcode = message;
                         flScreenWelcom.setVisibility(View.GONE);
+                        homeTabPageAdapter.getTabBindHomeFragment().setFacePreview(true);
                         flScreenWelcom.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                ConsumerManager.INSTANCE.showConsumer(MainBindActivity.this,homeTabPageAdapter.getTabBindHomeFragment() , MainBindActivity.this);
+                                ConsumerManager.INSTANCE.showConsumer(MainActivity.this,homeTabPageAdapter.getTabBindHomeFragment() , MainActivity.this);
                                 homeTabPageAdapter.getTabBindHomeFragment().findViews();
                                 homeTabPageAdapter.getTabBindHomeFragment().onRefreshBindModeEvent(new RefreshBindModeEvent(0));
                             }

@@ -78,18 +78,15 @@ public class TabBindHomeFragment extends BasePayHelperFragment implements OnCons
     }
 
     public void findViews() {
-        if (DeviceManager.INSTANCE.getDeviceInterface().getConsumeLayRes() != 2) {
 
-
-
+        if (fpcFace != null){
+            return;
+        }
             stvCancelPay = (ShapeTextView) findViewById(R.id.stv_cancel_pay);
             pbConsumer = (CircleProgressBar) findViewById(R.id.pb_consumer);
             stvPayPrice = (ShapeTextView) findViewById(R.id.stv_pay_price);
             stv_pay_price_balance = (ShapeTextView) findViewById(R.id.stv_pay_price_balance);
             fpcFace = (FacePassCameraLayout) findViewById(R.id.fpc_face);
-
-        }
-
         if (consumerListener != null) {
             Log.d(TAG, "limefindViews: " + 187);
             consumerListener.onCreateFacePreviewView(fpcFace.getFacePreviewFace(), fpcFace.getIrPreviewFace());
