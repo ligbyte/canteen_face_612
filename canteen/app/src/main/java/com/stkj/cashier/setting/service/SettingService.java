@@ -46,6 +46,13 @@ public interface SettingService {
     Call<BaseNetResponse<String>> appUpgradeCallback(@QueryMap Map<String, String> requestParams);
 
 
+
+    /**
+     * 绑盘接口
+     */
+    @GET("home/v2/index")
+    Observable<BaseNetResponse<FoodListInfo>> plateBinding(@QueryMap Map<String, String> requestParams);
+
     /**
      * 同步菜品
      */

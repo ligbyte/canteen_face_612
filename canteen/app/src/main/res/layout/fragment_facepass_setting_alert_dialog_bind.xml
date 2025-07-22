@@ -266,14 +266,7 @@
                         android:text="0.5m"
                         android:textColor="@color/white"
                         android:textSize="@dimen/sp_7"
-                        app:normalRadiusT="@dimen/dp_4"
-                        app:normalSolidColorT="@color/transparent"
-                        app:normalStrokeColorT="@color/color_2E354A"
-                        app:selectRadiusT="@dimen/dp_4"
-                        app:selectSolidColorT="@color/color_3489F5"
-                        app:selectStrokeColorT="@color/color_3489F5"
-                        app:selectStrokeWidthT="@dimen/dp_0_5"
-                        app:shapeSelect="true"/>
+                        android:background="@drawable/selector_btn_m"/>
 
                     <com.stkj.common.ui.widget.shapeselectlayout.ShapeSelectTextView
                         android:id="@+id/stv_detect_MinThreshold80"
@@ -284,13 +277,7 @@
                         android:text="0.8m"
                         android:textColor="@color/white"
                         android:textSize="@dimen/sp_7"
-                        app:normalRadiusT="@dimen/dp_4"
-                        app:normalSolidColorT="@color/transparent"
-                        app:normalStrokeColorT="@color/color_2E354A"
-                        app:selectRadiusT="@dimen/dp_4"
-                        app:selectSolidColorT="@color/color_3489F5"
-                        app:selectStrokeColorT="@color/color_3489F5"
-                        app:selectStrokeWidthT="@dimen/dp_0_5" />
+                        android:background="@drawable/selector_btn_m"/>
 
                     <com.stkj.common.ui.widget.shapeselectlayout.ShapeSelectTextView
                         android:id="@+id/stv_detect_MinThreshold100"
@@ -301,13 +288,7 @@
                         android:text="1m"
                         android:textColor="@color/white"
                         android:textSize="@dimen/sp_7"
-                        app:normalRadiusT="@dimen/dp_4"
-                        app:normalSolidColorT="@color/transparent"
-                        app:normalStrokeColorT="@color/color_2E354A"
-                        app:selectRadiusT="@dimen/dp_4"
-                        app:selectSolidColorT="@color/color_3489F5"
-                        app:selectStrokeColorT="@color/color_3489F5"
-                        app:selectStrokeWidthT="@dimen/dp_0_5"/>
+                        android:background="@drawable/selector_btn_m"/>
                 </LinearLayout>
 
                 <com.stkj.cashier.base.ui.widget.CommonSeekProgressBar

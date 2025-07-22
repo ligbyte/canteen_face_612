@@ -1,17 +1,12 @@
 package com.stkj.cashier.consumer;
 
 import android.content.Context;
-import android.hardware.display.DisplayManager;
-import android.view.Display;
 
 import com.stkj.cashier.base.callback.OnConsumerConfirmListener;
 import com.stkj.cashier.consumer.callback.ConsumerController;
 import com.stkj.cashier.consumer.callback.ConsumerListener;
-import com.stkj.cashier.consumer.ui.presentation.ConsumerPresentation;
-import com.stkj.cashier.machine.bind.TabBindHomeFragment;
+import com.stkj.cashier.machine.fragment.TabBindHomeFragment;
 import com.stkj.cashier.setting.model.FacePassPeopleInfo;
-import com.stkj.common.core.MainThreadHolder;
-import com.stkj.common.utils.DisplayUtils;
 
 /**
  * 面向消费者屏幕

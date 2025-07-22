@@ -1,14 +1,18 @@
-package com.stkj.cashier.machine.bind;
+package com.stkj.cashier.machine.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.alibaba.fastjson.JSON;
+import com.stkj.cashier.MainApplication;
 import com.stkj.cashier.R;
 import com.stkj.cashier.base.callback.OnConsumerConfirmListener;
-import com.stkj.cashier.base.device.DeviceManager;
+import com.stkj.cashier.base.model.BaseNetResponse;
+import com.stkj.cashier.base.net.ParamsUtils;
 import com.stkj.cashier.base.ui.widget.FacePassCameraLayout;
 import com.stkj.cashier.base.utils.EventBusUtils;
 import com.stkj.cashier.consumer.callback.ConsumerController;
@@ -16,7 +20,6 @@ import com.stkj.cashier.consumer.callback.ConsumerListener;
 import com.stkj.cashier.pay.callback.OnConsumerModeListener;
 import com.stkj.cashier.pay.data.PayConstants;
 import com.stkj.cashier.pay.helper.ConsumerModeHelper;
-import com.stkj.cashier.pay.model.BindFragmentBackEvent;
 import com.stkj.cashier.pay.model.BindFragmentSwitchEvent;
 import com.stkj.cashier.pay.model.RefreshBindModeEvent;
 import com.stkj.cashier.pay.model.RefreshConsumerGoodsModeEvent;
@@ -24,7 +27,13 @@ import com.stkj.cashier.pay.ui.fragment.AddGoodsFragment;
 import com.stkj.cashier.pay.ui.fragment.BasePayHelperFragment;
 import com.stkj.cashier.pay.ui.fragment.GoodsConsumerFragment;
 import com.stkj.cashier.setting.model.FacePassPeopleInfo;
+import com.stkj.cashier.setting.model.FoodBean;
+import com.stkj.cashier.setting.model.FoodListInfo;
+import com.stkj.cashier.setting.service.SettingService;
 import com.stkj.common.core.AppManager;
+import com.stkj.common.net.retrofit.RetrofitManager;
+import com.stkj.common.rx.DefaultObserver;
+import com.stkj.common.rx.RxTransformerUtils;
 import com.stkj.common.ui.widget.common.CircleProgressBar;
 import com.stkj.common.ui.widget.shapelayout.ShapeTextView;
 import com.stkj.common.utils.FragmentUtils;
@@ -32,6 +41,9 @@ import com.stkj.common.utils.FragmentUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.List;
+import java.util.TreeMap;
 
 
 /**
@@ -303,4 +315,41 @@ public class TabBindHomeFragment extends BasePayHelperFragment implements OnCons
             stvCancelPay.setVisibility(View.GONE);
         }
     }
+
+
+    /**
+     * 绑盘接口
+     */
+    @SuppressLint("AutoDispose")
+    public void plateBinding(String cardNumber) {
+        Log.i(TAG, "limefoodSyncCallback: " + 177);
+        TreeMap<String, String> paramsMap = ParamsUtils.newSortParamsMapWithMode("plateBinding");
+        paramsMap.put("cardNumber", cardNumber);
+        paramsMap.put("plateCode", MainApplication.barcode);
+        RetrofitManager.INSTANCE.getDefaultRetrofit()
+                .create(SettingService.class)
+                .plateBinding(ParamsUtils.signSortParamsMap(paramsMap))
+                .compose(RxTransformerUtils.mainSchedulers())
+                .subscribe(new DefaultObserver<BaseNetResponse<FoodListInfo>>() {
+                    @Override
+                    protected void onSuccess(BaseNetResponse<FoodListInfo> baseNetResponse) {
+                        Log.i(TAG, "limeplateBinding 336: " + JSON.toJSONString(baseNetResponse));
+                        try {
+
+
+
+                        }catch (Exception e){
+                            Log.e(TAG, "limeplateBinding 342: " +  e.getMessage());
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        //AppToast.toastMsg(e.getMessage());
+                        Log.e(TAG, "limeplateBinding: " +  e.getMessage());
+                    }
+                });
+    }
+
 }

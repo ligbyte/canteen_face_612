@@ -10,6 +10,7 @@ import com.stkj.cashier.R;
 import com.stkj.cashier.base.device.DeviceManager;
 import com.stkj.cashier.base.ui.widget.CommonSeekProgressBar;
 import com.stkj.cashier.base.utils.CommonDialogUtils;
+import com.stkj.cashier.machine.utils.ToastUtils;
 import com.stkj.cashier.setting.callback.FacePassSettingCallback;
 import com.stkj.cashier.setting.model.ResumeFacePassDetect;
 import com.stkj.cbgfacepass.CBGFacePassHandlerHelper;
@@ -211,7 +212,7 @@ public class FacePassSettingBindAlertFragment extends BaseDialogFragment {
             @Override
             public void onClick(View v) {
                 unSelectAllFaceMinThreshold();
-                stvDetectMinThreshold50.setShapeSelect(true);
+                stvDetectMinThreshold50.setSelected(true);
                 CBGFacePassConfigMMKV.putDetectFaceLevel(CBGFacePassConfigMMKV.DETECT_FACE_LEVEL50);
                 int cm50FaceMinThreshold = DeviceManager.INSTANCE.getDeviceInterface().get50cmDetectFaceMinThreshold();
                 seekbarDetectFaceMinThreshold.setSeekProgress(cm50FaceMinThreshold);
@@ -226,7 +227,7 @@ public class FacePassSettingBindAlertFragment extends BaseDialogFragment {
             @Override
             public void onClick(View v) {
                 unSelectAllFaceMinThreshold();
-                stvDetectMinThreshold80.setShapeSelect(true);
+                stvDetectMinThreshold80.setSelected(true);
                 CBGFacePassConfigMMKV.putDetectFaceLevel(CBGFacePassConfigMMKV.DETECT_FACE_LEVEL80);
                 int cm80FaceMinThreshold = DeviceManager.INSTANCE.getDeviceInterface().get80cmDetectFaceMinThreshold();
                 seekbarDetectFaceMinThreshold.setSeekProgress(cm80FaceMinThreshold);
@@ -242,7 +243,7 @@ public class FacePassSettingBindAlertFragment extends BaseDialogFragment {
             @Override
             public void onClick(View v) {
                 unSelectAllFaceMinThreshold();
-                stvDetectMinThreshold100.setShapeSelect(true);
+                stvDetectMinThreshold100.setSelected(true);
                 CBGFacePassConfigMMKV.putDetectFaceLevel(CBGFacePassConfigMMKV.DETECT_FACE_LEVEL100);
                 int cm100FaceMinThreshold = DeviceManager.INSTANCE.getDeviceInterface().get100cmDetectFaceMinThreshold();
                 seekbarDetectFaceMinThreshold.setSeekProgress(cm100FaceMinThreshold);
@@ -307,15 +308,15 @@ public class FacePassSettingBindAlertFragment extends BaseDialogFragment {
         int faceMinThresholdLevel = CBGFacePassConfigMMKV.getDetectFaceLevel();
         unSelectAllFaceMinThreshold();
         if (faceMinThresholdLevel == CBGFacePassConfigMMKV.DETECT_FACE_LEVEL50) {
-            stvDetectMinThreshold50.setShapeSelect(true);
+            stvDetectMinThreshold50.setSelected(true);
             int cm50FaceMinThreshold = DeviceManager.INSTANCE.getDeviceInterface().get50cmDetectFaceMinThreshold();
             seekbarDetectFaceMinThreshold.setSeekProgress(cm50FaceMinThreshold);
         } else if (faceMinThresholdLevel == CBGFacePassConfigMMKV.DETECT_FACE_LEVEL80) {
-            stvDetectMinThreshold80.setShapeSelect(true);
+            stvDetectMinThreshold80.setSelected(true);
             int cm80FaceMinThreshold = DeviceManager.INSTANCE.getDeviceInterface().get80cmDetectFaceMinThreshold();
             seekbarDetectFaceMinThreshold.setSeekProgress(cm80FaceMinThreshold);
         } else if (faceMinThresholdLevel == CBGFacePassConfigMMKV.DETECT_FACE_LEVEL100) {
-            stvDetectMinThreshold100.setShapeSelect(true);
+            stvDetectMinThreshold100.setSelected(true);
             int cm100FaceMinThreshold = DeviceManager.INSTANCE.getDeviceInterface().get100cmDetectFaceMinThreshold();
             seekbarDetectFaceMinThreshold.setSeekProgress(cm100FaceMinThreshold);
         } else {
@@ -366,9 +367,9 @@ public class FacePassSettingBindAlertFragment extends BaseDialogFragment {
     }
 
     private void unSelectAllFaceMinThreshold() {
-        stvDetectMinThreshold50.setShapeSelect(false);
-        stvDetectMinThreshold80.setShapeSelect(false);
-        stvDetectMinThreshold100.setShapeSelect(false);
+        stvDetectMinThreshold50.setSelected(false);
+        stvDetectMinThreshold80.setSelected(false);
+        stvDetectMinThreshold100.setSelected(false);
     }
 
     /**
@@ -378,7 +379,7 @@ public class FacePassSettingBindAlertFragment extends BaseDialogFragment {
         CBGFacePassHandlerHelper facePassHandlerHelper = mActivity.getWeakRefHolder(CBGFacePassHandlerHelper.class);
         boolean supportDualCamera = DeviceManager.INSTANCE.getDeviceInterface().isSupportDualCamera();
         facePassHandlerHelper.setCBGFacePassConfig(CBGFacePassConfigMMKV.getFacePassConfig(supportDualCamera));
-        AppToast.toastMsg("设置已生效");
+        ToastUtils.toastMsgSuccess("设置已生效");
     }
 
     /**
@@ -388,7 +389,7 @@ public class FacePassSettingBindAlertFragment extends BaseDialogFragment {
         CBGFacePassHandlerHelper facePassHandlerHelper = mActivity.getWeakRefHolder(CBGFacePassHandlerHelper.class);
         boolean supportDualCamera = DeviceManager.INSTANCE.getDeviceInterface().isSupportDualCamera();
         facePassHandlerHelper.setCBGAddFacePassConfig(CBGFacePassConfigMMKV.getFacePassConfig(supportDualCamera));
-        AppToast.toastMsg("设置已生效");
+        ToastUtils.toastMsgSuccess("设置已生效");
     }
 
 

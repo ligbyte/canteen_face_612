@@ -30,7 +30,7 @@ public class BaseResponse<T> {
     }
 
     public boolean isSuccess() {
-        return "200".equals(code);
+        return "10000".equals(code);
     }
 
     public boolean isTokenInvalid() {

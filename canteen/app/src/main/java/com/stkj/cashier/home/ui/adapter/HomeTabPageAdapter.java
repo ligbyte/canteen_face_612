@@ -9,8 +9,8 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.stkj.cashier.home.model.HomeMenuList;
 import com.stkj.cashier.home.model.HomeTabInfo;
-import com.stkj.cashier.machine.bind.TabBindHomeFragment;
-import com.stkj.cashier.machine.bind.TabBindSettingFragment;
+import com.stkj.cashier.machine.fragment.TabBindHomeFragment;
+import com.stkj.cashier.machine.fragment.TabBindSettingFragment;
 import com.stkj.common.ui.adapter.CommonFragmentPageAdapter;
 
 import java.util.List;

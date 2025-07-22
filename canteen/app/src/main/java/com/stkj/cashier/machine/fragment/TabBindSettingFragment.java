@@ -1,4 +1,4 @@
-package com.stkj.cashier.machine.bind;
+package com.stkj.cashier.machine.fragment;
 
 import android.text.TextUtils;
 import android.util.Log;

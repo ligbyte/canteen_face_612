@@ -113,7 +113,7 @@ public class GoodsCateSpecHelper extends ActivityWeakRefHolder {
                                     }
                                 }
                             }
-                            emitter.onNext(200);
+                            emitter.onNext(10000);
                             emitter.onComplete();
                         } catch (Throwable e) {
                             e.printStackTrace();

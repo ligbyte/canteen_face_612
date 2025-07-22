@@ -32,7 +32,7 @@ public class AppNetInitResponse {
     }
 
     public boolean isSuccess() {
-        return TextUtils.equals(Code, "200");
+        return TextUtils.equals(Code, "10000");
     }
 
     @Override

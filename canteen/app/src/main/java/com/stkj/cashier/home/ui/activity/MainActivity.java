@@ -861,6 +861,7 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
                     if (yxDevicePortCtrl != null && yxDevicePortCtrl.isOpen()){
                         yxDevicePortCtrl.closeDevice();
                     }
+
                     if (vp2Content.getCurrentItem() == 0){
                         MainApplication.barcode = message;
                         flScreenWelcom.setVisibility(View.GONE);

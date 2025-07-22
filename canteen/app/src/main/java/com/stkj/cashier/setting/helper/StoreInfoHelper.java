@@ -40,9 +40,9 @@ public class StoreInfoHelper extends ActivityWeakRefHolder {
     }
 
     public void requestStoreInfo() {
-        if (isRequestStoreInfo) {
-            return;
-        }
+//        if (isRequestStoreInfo) {
+//            return;
+//        }
         Activity mainActivity = AppManager.INSTANCE.getMainActivity();
         if (mainActivity == null) {
             return;
