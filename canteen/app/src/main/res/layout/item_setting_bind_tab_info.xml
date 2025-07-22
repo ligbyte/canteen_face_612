@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:textColor="@color/white"
-            android:textSize="@dimen/sp_9"
+            android:textSize="@dimen/sp_12"
             android:textStyle="normal"/>
 
     </LinearLayout>

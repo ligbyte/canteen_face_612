@@ -42,6 +42,8 @@ public class FacePassSettingBindAlertFragment extends BaseDialogFragment {
     private CommonSeekProgressBar seekbarLivenessThreshold;
     private CommonSeekProgressBar seekbarDetectFaceMinThreshold;
     private TextView tvDetectFaceMinThresholdTips;
+    private TextView stv_left_bt;
+    private TextView stv_right_bt;
     private CommonSeekProgressBar seekbarAddFaceMinThreshold;
     private CommonSeekProgressBar seekbarResultSearchScoreThreshold;
     private CommonSeekProgressBar seekbarPoseThreshold;
@@ -63,10 +65,25 @@ public class FacePassSettingBindAlertFragment extends BaseDialogFragment {
     @Override
     protected void initViews(View rootView) {
         llAddFaceSetting = (LinearLayout) findViewById(R.id.ll_add_face_setting);
+        stv_left_bt = (TextView) findViewById(R.id.stv_left_bt);
+        stv_right_bt = (TextView) findViewById(R.id.stv_right_bt);
+        stv_left_bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
+
+        stv_right_bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
         tvAddFaceSetting = (TextView) findViewById(R.id.tv_add_face_setting);
         if (BuildConfig.DEBUG) {
-            llAddFaceSetting.setVisibility(View.VISIBLE);
-            tvAddFaceSetting.setVisibility(View.VISIBLE);
+//            llAddFaceSetting.setVisibility(View.VISIBLE);
+//            tvAddFaceSetting.setVisibility(View.VISIBLE);
         } else {
             llAddFaceSetting.setVisibility(View.GONE);
             tvAddFaceSetting.setVisibility(View.GONE);
@@ -80,6 +97,9 @@ public class FacePassSettingBindAlertFragment extends BaseDialogFragment {
                 FragmentUtils.safeRemoveFragment(getParentFragmentManager(), FacePassSettingBindAlertFragment.this);
             }
         });
+
+
+
         ivSwitchLiveness = (ImageView) findViewById(R.id.iv_switch_liveness);
         ivSwitchLiveness.setOnClickListener(new View.OnClickListener() {
             @Override

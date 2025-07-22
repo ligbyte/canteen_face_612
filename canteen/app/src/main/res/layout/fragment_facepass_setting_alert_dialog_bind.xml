@@ -22,10 +22,9 @@
             android:gravity="center"
             android:text="人脸识别阈值设置"
             android:textColor="@color/white"
-            android:textSize="@dimen/sp_11"
+            android:textSize="@dimen/sp_12"
             android:textStyle="bold"
             app:line_bottom="true"
-            app:line_color="@color/color_666666"
             app:line_width="1px" />
 
         <ImageView
@@ -34,7 +33,8 @@
             android:layout_height="@dimen/dp_30"
             android:layout_gravity="right"
             android:padding="@dimen/dp_9"
-            android:src="@mipmap/icon_dialog_close" />
+            android:src="@mipmap/icon_dialog_close"
+            android:visibility="gone"/>
 
         <ScrollView
             android:layout_width="match_parent"
@@ -55,15 +55,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/tv_liveness"
                         android:layout_width="@dimen/dp_55"
                         android:layout_height="wrap_content"
+                        android:gravity="right"
                         android:text="开启活体:"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="@dimen/sp_10" />
 
                     <ImageView
                         android:id="@+id/iv_switch_liveness"
@@ -77,9 +79,10 @@
                         android:id="@+id/tv_dual_camera"
                         android:layout_width="@dimen/dp_55"
                         android:layout_height="wrap_content"
+                        android:gravity="right"
                         android:text="双目检测:"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/sp_8"
+                        android:textSize="@dimen/sp_10"
                         android:visibility="gone" />
 
                     <ImageView
@@ -103,9 +106,10 @@
                     <TextView
                         android:layout_width="@dimen/dp_55"
                         android:layout_height="wrap_content"
+                        android:gravity="right"
                         android:text="戴口罩识别:"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="@dimen/sp_10" />
 
                     <ImageView
                         android:id="@+id/iv_switch_occlusionMode"
@@ -118,9 +122,10 @@
                         android:layout_width="@dimen/dp_55"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_25"
+                        android:gravity="right"
                         android:text="开启相似度:"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="@dimen/sp_10" />
 
                     <ImageView
                         android:id="@+id/iv_switch_GaThreshold"
@@ -130,20 +135,21 @@
                         android:src="@drawable/selector_switch" />
                 </LinearLayout>
 
-                <!-- 当前识别阈值 -->
+                <!-- 识别阈值 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_5"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="@dimen/dp_55"
                         android:layout_height="wrap_content"
-                        android:text="当前识别阈值:"
+                        android:gravity="right"
+                        android:text="识别阈值:"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="@dimen/sp_10" />
 
                     <com.stkj.cashier.base.ui.widget.CommonSeekProgressBar
                         android:id="@+id/seekbar_searchThreshold"
@@ -157,16 +163,17 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_5"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="@dimen/dp_55"
                         android:layout_height="wrap_content"
+                        android:gravity="right"
                         android:text="相似度阈值:"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="@dimen/sp_10" />
 
                     <com.stkj.cashier.base.ui.widget.CommonSeekProgressBar
                         android:id="@+id/seekbar_GaThreshold"
@@ -176,20 +183,21 @@
                         android:layout_marginRight="@dimen/dp_11" />
                 </LinearLayout>
 
-                <!-- 当前活体阈值 -->
+                <!-- 活体阈值 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_5"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="@dimen/dp_55"
                         android:layout_height="wrap_content"
-                        android:text="当前活体阈值:"
+                        android:gravity="right"
+                        android:text="活体阈值:"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="@dimen/sp_10" />
 
                     <com.stkj.cashier.base.ui.widget.CommonSeekProgressBar
                         android:id="@+id/seekbar_livenessThreshold"
@@ -205,14 +213,16 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_5"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="@dimen/dp_55"
                         android:layout_height="wrap_content"
-                        android:text="当前角度阈值:"
+                        android:gravity="right"
+                        android:text="角度阈值:"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="@dimen/sp_10" />
 
                     <com.stkj.cashier.base.ui.widget.CommonSeekProgressBar
                         android:id="@+id/seekbar_poseThreshold"
@@ -228,74 +238,76 @@
                     android:layout_marginLeft="@dimen/dp_65"
                     android:text="(人脸与摄像头的俯仰角度)"
                     android:textColor="@color/color_3489F5"
-                    android:textSize="@dimen/sp_7" />
+                    android:textSize="@dimen/sp_7"
+                    android:visibility="gone"/>
 
-                <!-- 当前识别距离 -->
+                <!-- 识别距离 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_5"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="@dimen/dp_55"
                         android:layout_height="wrap_content"
-                        android:text="当前识别距离:"
+                        android:gravity="right"
+                        android:text="识别距离:"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="@dimen/sp_10" />
 
                     <com.stkj.common.ui.widget.shapeselectlayout.ShapeSelectTextView
                         android:id="@+id/stv_detect_MinThreshold50"
-                        android:layout_width="@dimen/dp_60"
-                        android:layout_height="@dimen/dp_18"
+                        android:layout_width="@dimen/dp_52"
+                        android:layout_height="@dimen/dp_25"
                         android:layout_marginLeft="@dimen/dp_12"
                         android:gravity="center"
                         android:text="0.5m"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/sp_7"
-                        app:normalRadiusT="@dimen/dp_3"
-                        app:normalSolidColorT="@color/color_f0f2f9"
-                        app:selectRadiusT="@dimen/dp_3"
-                        app:selectSolidColorT="@color/white"
+                        app:normalRadiusT="@dimen/dp_4"
+                        app:normalSolidColorT="@color/transparent"
+                        app:normalStrokeColorT="@color/color_2E354A"
+                        app:selectRadiusT="@dimen/dp_4"
+                        app:selectSolidColorT="@color/color_3489F5"
                         app:selectStrokeColorT="@color/color_3489F5"
                         app:selectStrokeWidthT="@dimen/dp_0_5"
-                        app:shapeNormalColor="@color/color_171717"
-                        app:shapeSelect="true"
-                        app:shapeSelectColor="@color/color_2261E0" />
+                        app:shapeSelect="true"/>
 
                     <com.stkj.common.ui.widget.shapeselectlayout.ShapeSelectTextView
                         android:id="@+id/stv_detect_MinThreshold80"
-                        android:layout_width="@dimen/dp_60"
-                        android:layout_height="@dimen/dp_18"
-                        android:layout_marginLeft="@dimen/dp_9"
+                        android:layout_width="@dimen/dp_52"
+                        android:layout_height="@dimen/dp_25"
+                        android:layout_marginLeft="@dimen/dp_6"
                         android:gravity="center"
                         android:text="0.8m"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/sp_7"
-                        app:normalRadiusT="@dimen/dp_3"
-                        app:normalSolidColorT="@color/color_f0f2f9"
-                        app:selectRadiusT="@dimen/dp_3"
-                        app:selectSolidColorT="@color/white"
+                        app:normalRadiusT="@dimen/dp_4"
+                        app:normalSolidColorT="@color/transparent"
+                        app:normalStrokeColorT="@color/color_2E354A"
+                        app:selectRadiusT="@dimen/dp_4"
+                        app:selectSolidColorT="@color/color_3489F5"
                         app:selectStrokeColorT="@color/color_3489F5"
-                        app:selectStrokeWidthT="@dimen/dp_0_5"
-                        app:shapeNormalColor="@color/color_171717"
-                        app:shapeSelectColor="@color/color_2261E0" />
+                        app:selectStrokeWidthT="@dimen/dp_0_5" />
 
                     <com.stkj.common.ui.widget.shapeselectlayout.ShapeSelectTextView
                         android:id="@+id/stv_detect_MinThreshold100"
-                        android:layout_width="@dimen/dp_60"
-                        android:layout_height="@dimen/dp_18"
-                        android:layout_marginLeft="@dimen/dp_9"
+                        android:layout_width="@dimen/dp_52"
+                        android:layout_height="@dimen/dp_25"
+                        android:layout_marginLeft="@dimen/dp_6"
                         android:gravity="center"
                         android:text="1m"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/sp_7"
-                        app:normalRadiusT="@dimen/dp_3"
-                        app:normalSolidColorT="@color/color_f0f2f9"
-                        app:selectRadiusT="@dimen/dp_3"
-                        app:selectSolidColorT="@color/white"
+                        app:normalRadiusT="@dimen/dp_4"
+                        app:normalSolidColorT="@color/transparent"
+                        app:normalStrokeColorT="@color/color_2E354A"
+                        app:selectRadiusT="@dimen/dp_4"
+                        app:selectSolidColorT="@color/color_3489F5"
                         app:selectStrokeColorT="@color/color_3489F5"
-                        app:selectStrokeWidthT="@dimen/dp_0_5"
-                        app:shapeNormalColor="@color/color_171717"
-                        app:shapeSelectColor="@color/color_2261E0" />
+                        app:selectStrokeWidthT="@dimen/dp_0_5"/>
                 </LinearLayout>
 
                 <com.stkj.cashier.base.ui.widget.CommonSeekProgressBar
@@ -320,16 +332,17 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_5"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="@dimen/dp_55"
                         android:layout_height="wrap_content"
-                        android:text="识别结果分数:"
+                        android:gravity="right"
+                        android:text="识别分数:"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="@dimen/sp_10" />
 
                     <com.stkj.cashier.base.ui.widget.CommonSeekProgressBar
                         android:id="@+id/seekbar_resultSearchScoreThreshold"
@@ -352,9 +365,10 @@
                     <TextView
                         android:layout_width="@dimen/dp_55"
                         android:layout_height="wrap_content"
+                        android:gravity="right"
                         android:text="人脸入库阈值:"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/sp_8" />
+                        android:textSize="@dimen/sp_10" />
 
                     <com.stkj.cashier.base.ui.widget.CommonSeekProgressBar
                         android:id="@+id/seekbar_add_faceMinThreshold"
@@ -373,6 +387,36 @@
                     android:textColor="@color/color_3489F5"
                     android:textSize="@dimen/sp_7"
                     android:visibility="gone" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/dp_15"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/stv_left_bt"
+                        android:layout_width="@dimen/dp_79"
+                        android:layout_height="@dimen/dp_27"
+                        android:gravity="center"
+                        android:text="确定"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_10"
+                        android:background="@drawable/btn_gradient_bottom_to_top"/>
+
+                    <TextView
+                        android:id="@+id/stv_right_bt"
+                        android:layout_width="@dimen/dp_79"
+                        android:layout_height="@dimen/dp_27"
+                        android:layout_marginLeft="@dimen/dp_11"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:text="取消"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_10"
+                        android:background="@drawable/btn_dialog_cancle" />
+                </LinearLayout>
 
             </LinearLayout>
         </ScrollView>

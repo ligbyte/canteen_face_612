@@ -110,7 +110,7 @@ public class TabBindSettingFragment extends BaseRecyclerFragment implements View
         rl_restart_app.setOnClickListener(this);
         rl_face_value.setOnClickListener(this);
         rl_face_sync.setOnClickListener(this);
-        tv_app_version.setText("慧餐宝v" + BuildConfig.VERSION_NAME);
+        tv_app_version.setText(BuildConfig.VERSION_NAME);
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
