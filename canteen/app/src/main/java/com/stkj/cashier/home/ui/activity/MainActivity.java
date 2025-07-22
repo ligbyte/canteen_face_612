@@ -334,7 +334,7 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
                         public void run() {
                             openYxDeviceSDK();
                         }
-                    },3 * 1000);
+                    },1 * 1000);
                 }
             });
         }catch (Exception e){
