@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
@@ -42,6 +43,7 @@ import com.stkj.cashier.base.ui.dialog.CommonAlertDialogFragment;
 import com.stkj.cashier.base.ui.dialog.CommonBindSignleAlertDialogFragment;
 import com.stkj.cashier.base.ui.dialog.CommonInputDialogFragment;
 import com.stkj.cashier.base.utils.CommonDialogUtils;
+import com.stkj.cashier.base.utils.PriceUtils;
 import com.stkj.cashier.consumer.ConsumerManager;
 import com.stkj.cashier.consumer.callback.ConsumerListener;
 import com.stkj.cashier.home.callback.OnGetStoreInfoListener;
@@ -80,6 +82,7 @@ import com.stkj.common.rx.DefaultObserver;
 import com.stkj.common.rx.RxTransformerUtils;
 import com.stkj.common.ui.activity.BaseActivity;
 import com.stkj.common.ui.toast.AppToast;
+import com.stkj.common.ui.toast.ToastUtils;
 import com.stkj.common.utils.ActivityUtils;
 import com.stkj.common.utils.AndroidUtils;
 import com.stkj.common.utils.FileUtils;
@@ -114,6 +117,10 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
     private View scanHolderView;
     private ViewPager2 vp2Content;
     private FrameLayout flScreenWelcom;
+    private FrameLayout fl_screen_success;
+    private TextView tv_tips;
+    private TextView tv_user_name;
+    private TextView tv_user_balance;
     private HomeTabPageAdapter homeTabPageAdapter;
     private static BindingHomeTitleLayout htlConsumer;
     //是否需要重新恢复消费者页面
@@ -373,6 +380,10 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
         scanHolderView = findViewById(R.id.scan_holder_view);
         htlConsumer = (BindingHomeTitleLayout) findViewById(R.id.htl_consumer);
         flScreenWelcom = findViewById(R.id.fl_screen_welcom);
+        fl_screen_success = findViewById(R.id.fl_screen_success);
+        tv_tips = findViewById(R.id.tv_tips);
+        tv_user_name = findViewById(R.id.tv_user_name);
+        tv_user_balance = findViewById(R.id.tv_user_balance);
 //        flScreenProtect.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -967,8 +978,16 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
                         Log.i(TAG, "limeplateBinding 336: " + JSON.toJSONString(baseNetResponse));
                         try {
 
-
-
+                            if (baseNetResponse.isSuccess() && baseNetResponse.getData() != null && baseNetResponse.getData().getCustomerInfo() != null) {
+                                flScreenWelcom.setVisibility(View.GONE);
+                                fl_screen_success.setVisibility(View.VISIBLE);
+                                tv_tips.setText("餐盘码:  " + MainApplication.barcode);
+                                tv_user_name.setText("用户姓名：" + baseNetResponse.getData().getCustomerInfo().getName());
+                                tv_user_balance.setText("餐卡余额：" + PriceUtils.formatPrice(baseNetResponse.getData().getCustomerInfo().getBalance().getAmount()) + "元");
+                            }else {
+                                ToastUtils.toastMsgError(TextUtils.isEmpty(baseNetResponse.getMsg()) ? baseNetResponse.getMessage() : baseNetResponse.getMsg());
+                                EventBus.getDefault().post(new TTSSpeakEvent(TextUtils.isEmpty(baseNetResponse.getMsg()) ? baseNetResponse.getMessage() : baseNetResponse.getMsg()));
+                            }
                         }catch (Exception e){
                             Log.e(TAG, "limeplateBinding 342: " +  e.getMessage());
                         }
