@@ -93,7 +93,7 @@ public class BaseFragment extends Fragment {
         mActivity.showLoadingDialog(tag);
     }
 
-    public void showLoadingDialog(int tag, String loadingText) {
+    public void showLoadingDialog(String tag, String loadingText) {
         mActivity.showLoadingDialog(tag, loadingText);
     }
 

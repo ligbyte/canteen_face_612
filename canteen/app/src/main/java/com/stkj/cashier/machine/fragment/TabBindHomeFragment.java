@@ -317,39 +317,6 @@ public class TabBindHomeFragment extends BasePayHelperFragment implements OnCons
     }
 
 
-    /**
-     * 绑盘接口
-     */
-    @SuppressLint("AutoDispose")
-    public void plateBinding(String cardNumber) {
-        Log.i(TAG, "limefoodSyncCallback: " + 177);
-        TreeMap<String, String> paramsMap = ParamsUtils.newSortParamsMapWithMode("plateBinding");
-        paramsMap.put("cardNumber", cardNumber);
-        paramsMap.put("plateCode", MainApplication.barcode);
-        RetrofitManager.INSTANCE.getDefaultRetrofit()
-                .create(SettingService.class)
-                .plateBinding(ParamsUtils.signSortParamsMap(paramsMap))
-                .compose(RxTransformerUtils.mainSchedulers())
-                .subscribe(new DefaultObserver<BaseNetResponse<FoodListInfo>>() {
-                    @Override
-                    protected void onSuccess(BaseNetResponse<FoodListInfo> baseNetResponse) {
-                        Log.i(TAG, "limeplateBinding 336: " + JSON.toJSONString(baseNetResponse));
-                        try {
 
-
-
-                        }catch (Exception e){
-                            Log.e(TAG, "limeplateBinding 342: " +  e.getMessage());
-                        }
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        //AppToast.toastMsg(e.getMessage());
-                        Log.e(TAG, "limeplateBinding: " +  e.getMessage());
-                    }
-                });
-    }
 
 }

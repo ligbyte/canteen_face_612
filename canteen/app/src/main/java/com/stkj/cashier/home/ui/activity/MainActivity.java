@@ -27,12 +27,15 @@ import android.widget.FrameLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.alibaba.fastjson.JSON;
 import com.stkj.cashier.BuildConfig;
 import com.stkj.cashier.MainApplication;
 import com.stkj.cashier.R;
 import com.stkj.cashier.base.callback.AppNetCallback;
 import com.stkj.cashier.base.device.DeviceManager;
+import com.stkj.cashier.base.model.BaseNetResponse;
 import com.stkj.cashier.base.net.AppNetManager;
+import com.stkj.cashier.base.net.ParamsUtils;
 import com.stkj.cashier.base.permission.AppPermissionHelper;
 import com.stkj.cashier.base.tts.TTSVoiceHelper;
 import com.stkj.cashier.base.ui.dialog.CommonAlertDialogFragment;
@@ -60,6 +63,9 @@ import com.stkj.cashier.pay.model.TTSSpeakEvent;
 import com.stkj.cashier.setting.data.ServerSettingMMKV;
 import com.stkj.cashier.setting.helper.AppUpgradeHelper;
 import com.stkj.cashier.setting.helper.StoreInfoHelper;
+import com.stkj.cashier.setting.model.FoodListInfo;
+import com.stkj.cashier.setting.model.PlateBinding;
+import com.stkj.cashier.setting.service.SettingService;
 import com.stkj.cbgfacepass.CBGFacePassHandlerHelper;
 import com.stkj.cbgfacepass.data.CBGFacePassConfigMMKV;
 import com.stkj.cbgfacepass.model.CBGFacePassConfig;
@@ -67,7 +73,10 @@ import com.stkj.cbgfacepass.permission.CBGPermissionRequest;
 import com.stkj.common.core.AppManager;
 import com.stkj.common.core.CountDownHelper;
 import com.stkj.common.log.LogHelper;
+import com.stkj.common.net.retrofit.RetrofitManager;
 import com.stkj.common.permissions.callback.PermissionCallback;
+import com.stkj.common.rx.DefaultObserver;
+import com.stkj.common.rx.RxTransformerUtils;
 import com.stkj.common.ui.activity.BaseActivity;
 import com.stkj.common.ui.toast.AppToast;
 import com.stkj.common.utils.ActivityUtils;
@@ -92,6 +101,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeMap;
 
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
@@ -274,7 +284,7 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
                 .requestPermission(new CBGPermissionRequest(), new PermissionCallback() {
                     @Override
                     public void onGranted() {
-                        showLoadingDialog();
+                        showLoadingDialog("加载中");
                         //设备识别距离阈值
                         int defaultFaceMinThreshold = DeviceManager.INSTANCE.getDeviceInterface().getDefaultDetectFaceMinThreshold();
                         CBGFacePassConfigMMKV.setDefDetectFaceMinThreshold(defaultFaceMinThreshold);
@@ -304,9 +314,9 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
 //        vp2Content.setVisibility(View.INVISIBLE);
         flScreenWelcom.setVisibility(View.VISIBLE);
 
-//        flScreenWelcom.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
+        flScreenWelcom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 //                flScreenWelcom.setVisibility(View.GONE);
 //                flScreenWelcom.postDelayed(new Runnable() {
 //                    @Override
@@ -316,10 +326,11 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
 //                        EventBus.getDefault().post(new RefreshBindModeEvent(0));
 //                    }
 //                },50);
-//
-//
-//            }
-//        });
+
+                plateBinding("1995710196");
+
+            }
+        });
     }
 
     private void initYxSDK() {
@@ -508,7 +519,7 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
                 .setLeftNavClickListener(new CommonAlertDialogFragment.OnSweetClickListener() {
                     @Override
                     public void onClick(CommonAlertDialogFragment alertDialogFragment) {
-                        showLoadingDialog();
+                        showLoadingDialog("加载中");
                         AppNetManager.INSTANCE.initAppNet();
                     }
                 });
@@ -783,7 +794,10 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
     public static class MinuteReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            htlConsumer.onDateChange();
+            if (htlConsumer != null) {
+                htlConsumer.onDateChange();
+            }
+
         }
     }
 
@@ -922,5 +936,41 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
     @Override
     public void onClose() {
 
+    }
+
+
+    /**
+     * 绑盘接口
+     */
+    @SuppressLint("AutoDispose")
+    public void plateBinding(String cardNumber) {
+        Log.i(TAG, "limefoodSyncCallback: " + 177);
+        TreeMap<String, String> paramsMap = ParamsUtils.newSortParamsMapWithMode("plateBinding");
+        paramsMap.put("cardNumber", cardNumber);
+        paramsMap.put("plateCode", MainApplication.barcode);
+        RetrofitManager.INSTANCE.getDefaultRetrofit()
+                .create(SettingService.class)
+                .plateBinding(ParamsUtils.signSortParamsMap(paramsMap))
+                .compose(RxTransformerUtils.mainSchedulers())
+                .subscribe(new DefaultObserver<BaseNetResponse<PlateBinding>>() {
+                    @Override
+                    protected void onSuccess(BaseNetResponse<PlateBinding> baseNetResponse) {
+                        Log.i(TAG, "limeplateBinding 336: " + JSON.toJSONString(baseNetResponse));
+                        try {
+
+
+
+                        }catch (Exception e){
+                            Log.e(TAG, "limeplateBinding 342: " +  e.getMessage());
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        //AppToast.toastMsg(e.getMessage());
+                        Log.e(TAG, "limeplateBinding: " +  e.getMessage());
+                    }
+                });
     }
 }

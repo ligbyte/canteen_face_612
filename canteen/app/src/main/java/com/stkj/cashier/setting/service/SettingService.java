@@ -5,6 +5,7 @@ import com.stkj.cashier.setting.model.CheckAppVersion;
 import com.stkj.cashier.setting.model.FacePassPeopleListInfo;
 import com.stkj.cashier.setting.model.FoodListInfo;
 import com.stkj.cashier.setting.model.FoodSyncCallback;
+import com.stkj.cashier.setting.model.PlateBinding;
 
 import java.util.Map;
 
@@ -51,7 +52,7 @@ public interface SettingService {
      * 绑盘接口
      */
     @GET("home/v2/index")
-    Observable<BaseNetResponse<FoodListInfo>> plateBinding(@QueryMap Map<String, String> requestParams);
+    Observable<BaseNetResponse<PlateBinding>> plateBinding(@QueryMap Map<String, String> requestParams);
 
     /**
      * 同步菜品

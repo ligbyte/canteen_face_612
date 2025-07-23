@@ -155,6 +155,7 @@ dependencies {
 //    api 'org.matheclipse:matheclipse-core:3.0.0'
 
     api files('libs/dialog_lib.aar')
+    api files('libs/lib_loadingview.aar')
     api files('libs/datepicker-release.aar')
     api files('libs/tablayout_lib.aar')
     api files('libs/flowlayout-release.aar')
