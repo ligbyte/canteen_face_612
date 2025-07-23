@@ -18,6 +18,7 @@ import com.stkj.cashier.base.greendao.generate.DaoSession;
 import com.stkj.cashier.base.greendao.generate.FacePassPeopleInfoDao;
 import com.stkj.cashier.base.model.BaseNetResponse;
 import com.stkj.cashier.base.net.ParamsUtils;
+import com.stkj.cashier.pay.model.LoadingDialogEvent;
 import com.stkj.cashier.setting.data.FacePassDateBaseMMKV;
 import com.stkj.cashier.setting.model.AddLocalFacePassInfoWrapper;
 import com.stkj.cashier.setting.model.FacePassPeopleInfo;
@@ -35,8 +36,10 @@ import com.stkj.common.rx.AutoDisposeUtils;
 import com.stkj.common.rx.DefaultObserver;
 import com.stkj.common.rx.RxTransformerUtils;
 import com.stkj.common.ui.toast.AppToast;
+import com.stkj.common.ui.toast.ToastUtils;
 import com.stkj.common.utils.TimeUtils;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.query.Query;
 import org.greenrobot.greendao.query.QueryBuilder;
@@ -440,6 +443,8 @@ public class FacePassHelper extends ActivityWeakRefHolder {
                     @Override
                     public void onError(Throwable e) {
                         callbackFinishFacePass(e.getMessage(), true);
+                        EventBus.getDefault()
+                                .post(new LoadingDialogEvent("下载失败","FAIL"));
                         Log.e(TAG, "limerequestFacePass: " + e.getMessage());
                     }
                 });
@@ -678,13 +683,17 @@ public class FacePassHelper extends ActivityWeakRefHolder {
                             onFacePassListener.onAddFacePassToLocalError(e.getMessage());
                         }
                         callbackFinishFacePass(e.getMessage(), true);
+                        EventBus.getDefault()
+                                .post(new LoadingDialogEvent("添加人脸失败","FAIL"));
                     }
                 });
     }
 
     private void callbackFinishFacePass(String msg, boolean isError) {
         for (OnFacePassListener onFacePassListener : facePassListenerHashSet) {
-            AppToast.toastMsg("人脸库更新完毕");
+            EventBus.getDefault()
+                    .post(new LoadingDialogEvent("同步成功","SUCCESS"));
+//            ToastUtils.toastMsgSuccess("人脸库更新完毕");
             onFacePassListener.onLoadFacePassGroupEnd(null, msg, isError);
         }
         isRequestFacePass = false;
@@ -789,7 +798,7 @@ public class FacePassHelper extends ActivityWeakRefHolder {
                     @Override
                     protected void onSuccess(Integer integer) {
                         isDeleteAllFacePass = false;
-                        AppToast.toastMsg("删除人脸库成功");
+                        //ToastUtils.toastMsgSuccess("删除人脸库成功");
                         if (needRequestAllFace) {
                             requestAllFacePass();
                         }
@@ -804,7 +813,9 @@ public class FacePassHelper extends ActivityWeakRefHolder {
                     @Override
                     public void onError(Throwable e) {
                         isDeleteAllFacePass = false;
-                        AppToast.toastMsg("删除人脸库失败");
+                        ToastUtils.toastMsgError("删除人脸库失败");
+                        EventBus.getDefault()
+                                .post(new LoadingDialogEvent( "下载失败","FAIL"));
                         if (needRequestAllFace) {
                             requestAllFacePass();
                         }

@@ -1,4 +1,4 @@
-package com.stkj.cashier.machine.utils;
+package com.stkj.common.ui.toast;
 
 import android.content.Context;
 import android.os.CountDownTimer;
@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.stkj.cashier.R;
+import com.stkj.common.R;
 
 
 /**

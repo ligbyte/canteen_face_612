@@ -58,6 +58,7 @@ import com.stkj.cashier.home.ui.widget.HomeTitleLayout;
 import com.stkj.cashier.pay.helper.ConsumerModeHelper;
 import com.stkj.cashier.pay.model.BindFragmentBackEvent;
 import com.stkj.cashier.pay.model.BindFragmentSwitchEvent;
+import com.stkj.cashier.pay.model.LoadingDialogEvent;
 import com.stkj.cashier.pay.model.RefreshBindModeEvent;
 import com.stkj.cashier.pay.model.TTSSpeakEvent;
 import com.stkj.cashier.setting.data.ServerSettingMMKV;
@@ -844,6 +845,14 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
             }
         }
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onLoadingDialogEvent(LoadingDialogEvent eventBus) {
+        Log.d(TAG, "limeonLoadingDialogEvent: " + 851);
+        showLoadingDialog(eventBus.getTag(), eventBus.getMsg());
+    }
+
+
 
     @Override
     public void onDataResult(ReadCardResulBean resulBean) {

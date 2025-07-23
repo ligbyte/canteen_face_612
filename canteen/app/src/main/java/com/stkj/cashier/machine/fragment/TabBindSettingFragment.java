@@ -24,6 +24,7 @@ import com.stkj.cashier.machine.adapter.SettingBindTabInfoViewHolder;
 import com.stkj.cashier.machine.model.SettingBindTabInfo;
 import com.stkj.cashier.pay.model.BindFragmentBackEvent;
 import com.stkj.cashier.pay.model.BindFragmentSwitchEvent;
+import com.stkj.cashier.pay.model.LoadingDialogEvent;
 import com.stkj.cashier.pay.ui.weight.GridSpacingItemDecoration;
 import com.stkj.cashier.setting.callback.FacePassSettingCallback;
 import com.stkj.cashier.setting.helper.AppUpgradeHelper;
@@ -319,6 +320,8 @@ public class TabBindSettingFragment extends BaseRecyclerFragment implements View
                     .setLeftNavClickListener(new CommonBindAlertDialogFragment.OnSweetClickListener() {
                         @Override
                         public void onClick(CommonBindAlertDialogFragment alertDialogFragment) {
+                            EventBus.getDefault()
+                                    .post(new LoadingDialogEvent("同步人脸","sync"));
                             deleteAllFacePass();
                         }
                     })
@@ -349,4 +352,5 @@ public class TabBindSettingFragment extends BaseRecyclerFragment implements View
     public void onNoVersionUpgrade() {
 
     }
+
 }

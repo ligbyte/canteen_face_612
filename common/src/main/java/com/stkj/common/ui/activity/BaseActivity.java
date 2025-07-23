@@ -143,6 +143,7 @@ public class BaseActivity extends AppCompatActivity {
             public void run() {
                 if (tipLoadDialog != null){
                     tipLoadDialog.dismiss();
+                    tipLoadDialog = null;
                 }
             }
         });

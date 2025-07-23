@@ -1,10 +1,10 @@
-package com.stkj.cashier.machine.utils;
+package com.stkj.common.ui.toast;
 
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.stkj.cashier.MainApplication;
-import com.stkj.cashier.R;
+import com.stkj.common.R;
+import com.stkj.common.core.AppManager;
 import com.stkj.common.core.MainThreadHolder;
 
 /**
@@ -47,7 +47,7 @@ public class ToastUtils {
             @Override
             public void run() {
                 if (!TextUtils.isEmpty(msg)) {
-                    ToastUtil toastUtil2 = new ToastUtil(MainApplication.instances, R.layout.toast_center_horizontal, msg);
+                    ToastUtil toastUtil2 = new ToastUtil(AppManager.INSTANCE.getApplication(), R.layout.toast_center_horizontal, msg);
                     toastUtil2.show();
                 }
             }
@@ -63,7 +63,7 @@ public class ToastUtils {
             @Override
             public void run() {
                 if (!TextUtils.isEmpty(msg)) {
-                    ToastUtil toastUtil2 = new ToastUtil(MainApplication.instances, R.layout.toast_center_warning, msg);
+                    ToastUtil toastUtil2 = new ToastUtil(AppManager.INSTANCE.getApplication(), R.layout.toast_center_warning, msg);
                     toastUtil2.show();
                 }
             }
@@ -79,7 +79,7 @@ public class ToastUtils {
             @Override
             public void run() {
                 if (!TextUtils.isEmpty(msg)) {
-                    ToastUtil toastUtil2 = new ToastUtil(MainApplication.instances, R.layout.toast_center_error, msg);
+                    ToastUtil toastUtil2 = new ToastUtil(AppManager.INSTANCE.getApplication(), R.layout.toast_center_error, msg);
                     toastUtil2.show();
                 }
             }
