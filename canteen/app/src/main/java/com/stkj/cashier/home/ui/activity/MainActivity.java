@@ -1016,7 +1016,7 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
                                 tv_tips.setText("餐盘码:  " + MainApplication.barcode);
                                 tv_user_name.setText("用户姓名：" + baseNetResponse.getData().getCustomerInfo().getName());
                                 tv_user_balance.setText("餐卡余额：" + PriceUtils.formatPrice(baseNetResponse.getData().getAmount().getAmount()) + "元");
-
+                                onTTSSpeakEvent(new TTSSpeakEvent("绑定成功，欢迎就餐"));
                             }else {
                                 ToastUtils.toastMsgError(TextUtils.isEmpty(baseNetResponse.getMsg()) ? baseNetResponse.getMessage() : baseNetResponse.getMsg());
                                 onTTSSpeakEvent(new TTSSpeakEvent(TextUtils.isEmpty(baseNetResponse.getMsg()) ? baseNetResponse.getMessage() : baseNetResponse.getMsg()));
