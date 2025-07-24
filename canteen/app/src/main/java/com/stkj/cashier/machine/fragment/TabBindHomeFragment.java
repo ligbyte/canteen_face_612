@@ -17,10 +17,12 @@ import com.stkj.cashier.base.ui.widget.FacePassCameraLayout;
 import com.stkj.cashier.base.utils.EventBusUtils;
 import com.stkj.cashier.consumer.callback.ConsumerController;
 import com.stkj.cashier.consumer.callback.ConsumerListener;
+import com.stkj.cashier.home.ui.activity.MainActivity;
 import com.stkj.cashier.pay.callback.OnConsumerModeListener;
 import com.stkj.cashier.pay.data.PayConstants;
 import com.stkj.cashier.pay.helper.ConsumerModeHelper;
 import com.stkj.cashier.pay.model.BindFragmentSwitchEvent;
+import com.stkj.cashier.pay.model.FacePassRetryEvent;
 import com.stkj.cashier.pay.model.RefreshBindModeEvent;
 import com.stkj.cashier.pay.model.RefreshConsumerGoodsModeEvent;
 import com.stkj.cashier.pay.ui.fragment.AddGoodsFragment;
@@ -66,7 +68,6 @@ public class TabBindHomeFragment extends BasePayHelperFragment implements OnCons
     private boolean isSetPayOrderInfo;
     private ShapeTextView stvPayPrice;
     private ShapeTextView stv_pay_price_balance;
-    private LinearLayout llTakeMealWay;
     private CircleProgressBar pbConsumer;
     private ShapeTextView stvCancelPay;
     private Context context;
@@ -111,7 +112,6 @@ public class TabBindHomeFragment extends BasePayHelperFragment implements OnCons
 //        tvGoodsPrice = (TextView) findViewById(R.id.tv_goods_price);
 //        mOrderAdapter = new CommonRecyclerAdapter(false);
 //        rvGoodsList.setAdapter(mOrderAdapter);
-        llTakeMealWay = (LinearLayout) findViewById(R.id.ll_take_meal_way);
 
 
 
@@ -142,7 +142,16 @@ public class TabBindHomeFragment extends BasePayHelperFragment implements OnCons
     public void onRefreshBindModeEvent(RefreshBindModeEvent eventBus) {
         Log.d(TAG, "limegoToAllAuth: " + 245);
         handler.removeCallbacks(runnable);
-        handler.postDelayed(runnable,10 * 1000);
+        //handler.postDelayed(runnable,10 * 1000);
+        goToPay("100");
+
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void handleFaceRetry(FacePassRetryEvent eventBus) {
+        handler.removeCallbacks(runnable);
+        //handler.postDelayed(runnable,10 * 1000);
         goToPay("100");
     }
 
@@ -200,7 +209,6 @@ public class TabBindHomeFragment extends BasePayHelperFragment implements OnCons
     public void setConsumerConfirmFaceInfo(FacePassPeopleInfo facePassPeopleInfo, boolean needConfirm, int consumerType) {
         stvCancelPay.setVisibility(View.GONE);
         pbConsumer.setVisibility(View.GONE);
-        llTakeMealWay.setVisibility(View.GONE);
         fpcFace.setFaceImage(facePassPeopleInfo.getImgData());
         if (needConfirm) {
             fpcFace.setFaceCameraTips("识别成功,请确认?");
@@ -220,7 +228,6 @@ public class TabBindHomeFragment extends BasePayHelperFragment implements OnCons
     public void setConsumerConfirmCardInfo(String cardNumber, boolean needConfirm) {
         stvCancelPay.setVisibility(View.GONE);
         pbConsumer.setVisibility(View.GONE);
-        llTakeMealWay.setVisibility(View.GONE);
         fpcFace.setFaceImage("");
         if (needConfirm) {
             fpcFace.setFaceCameraTips("读卡成功,请确认?");
@@ -236,23 +243,15 @@ public class TabBindHomeFragment extends BasePayHelperFragment implements OnCons
     public void setConsumerConfirmScanInfo(String scanData, boolean needConfirm) {
         stvCancelPay.setVisibility(View.GONE);
         pbConsumer.setVisibility(View.GONE);
-        llTakeMealWay.setVisibility(View.GONE);
         fpcFace.setFaceImage("");
-        if (needConfirm) {
-            fpcFace.setFaceCameraTips("扫码成功,请确认?");
+        Log.d(TAG, "limesetConsumerConfirmScanInfo scanData: " + scanData);
+        ((MainActivity)getActivity()).plateBinding(scanData);
 
-
-        } else {
-            if (facePassConfirmListener != null) {
-                facePassConfirmListener.onConfirmScanData(scanData);
-            }
-        }
     }
 
     @Override
     public void setConsumerTakeMealWay() {
         pbConsumer.setVisibility(View.GONE);
-        llTakeMealWay.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -260,7 +259,6 @@ public class TabBindHomeFragment extends BasePayHelperFragment implements OnCons
         if (fpcFace != null) {
             stvCancelPay.setVisibility(View.GONE);
             pbConsumer.setVisibility(View.GONE);
-            llTakeMealWay.setVisibility(View.GONE);
             stvPayPrice.setText("¥ 0.00");
             stvPayPrice.setVisibility(View.GONE);
         }
@@ -278,7 +276,6 @@ public class TabBindHomeFragment extends BasePayHelperFragment implements OnCons
     public void setNormalConsumeStatus() {
         stvCancelPay.setVisibility(View.GONE);
         pbConsumer.setVisibility(View.GONE);
-        llTakeMealWay.setVisibility(View.GONE);
 //        sflOrderList.setVisibility(View.GONE);
     }
 
@@ -286,7 +283,6 @@ public class TabBindHomeFragment extends BasePayHelperFragment implements OnCons
     public void setPayConsumeStatus() {
         stvCancelPay.setVisibility(View.GONE);
         pbConsumer.setVisibility(View.GONE);
-        llTakeMealWay.setVisibility(View.GONE);
 //        sflOrderList.setVisibility(isSetPayOrderInfo ? View.VISIBLE : View.GONE);
     }
 

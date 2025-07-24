@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.hardware.usb.UsbDevice;
 import android.net.Uri;
+import android.util.Log;
 import android.view.KeyEvent;
 
 import com.stkj.common.core.ActivityWeakRefHolder;
@@ -33,6 +34,8 @@ import java.util.List;
  */
 public abstract class DeviceInterface {
 
+    
+    public final static String TAG = "DeviceInterface";
     private OnMoneyBoxListener mMoneyBoxListener;
     private OnPrintListener mPrintListener;
     private OnReadICCardListener mReadICCardListener;

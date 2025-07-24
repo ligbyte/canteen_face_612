@@ -60,6 +60,7 @@ import com.stkj.cashier.home.ui.widget.HomeTitleLayout;
 import com.stkj.cashier.pay.helper.ConsumerModeHelper;
 import com.stkj.cashier.pay.model.BindFragmentBackEvent;
 import com.stkj.cashier.pay.model.BindFragmentSwitchEvent;
+import com.stkj.cashier.pay.model.FacePassRetryEvent;
 import com.stkj.cashier.pay.model.LoadingDialogEvent;
 import com.stkj.cashier.pay.model.RefreshBindModeEvent;
 import com.stkj.cashier.pay.model.TTSSpeakEvent;
@@ -78,6 +79,8 @@ import com.stkj.common.core.CountDownHelper;
 import com.stkj.common.log.LogHelper;
 import com.stkj.common.net.retrofit.RetrofitManager;
 import com.stkj.common.permissions.callback.PermissionCallback;
+import com.stkj.common.rx.AutoDisposeUtils;
+import com.stkj.common.rx.DefaultDisposeObserver;
 import com.stkj.common.rx.DefaultObserver;
 import com.stkj.common.rx.RxTransformerUtils;
 import com.stkj.common.ui.activity.BaseActivity;
@@ -88,6 +91,7 @@ import com.stkj.common.utils.AndroidUtils;
 import com.stkj.common.utils.FileUtils;
 import com.stkj.common.utils.KeyBoardUtils;
 import com.stkj.deviceinterface.UsbDeviceHelper;
+import com.stkj.deviceinterface.callback.OnScanQRCodeListener;
 import com.stkj.deviceinterface.callback.UsbDeviceListener;
 import com.youxin.myseriallib.base.Constants;
 import com.youxin.myseriallib.bean.DeviceDataCallBlack;
@@ -106,7 +110,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 
+import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity implements AppNetCallback, ConsumerListener , DeviceDataCallBlack<ReadCardResulBean>, DeviceStatusListener {
@@ -134,6 +140,7 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
     private YxDeviceSDK yxDeviceSDK;
     private YxDevicePortCtrl yxDevicePortCtrl;
     private String currentTrayNo;
+    private DefaultDisposeObserver<Long> canSpeakFacePassFailObserver;
     private int lossCount;
     private int totalCount;
 
@@ -322,9 +329,9 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
 //        vp2Content.setVisibility(View.INVISIBLE);
         flScreenWelcom.setVisibility(View.VISIBLE);
 
-        flScreenWelcom.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+//        flScreenWelcom.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
 //                flScreenWelcom.setVisibility(View.GONE);
 //                flScreenWelcom.postDelayed(new Runnable() {
 //                    @Override
@@ -334,11 +341,9 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
 //                        EventBus.getDefault().post(new RefreshBindModeEvent(0));
 //                    }
 //                },50);
-
-                plateBinding("1995710196");
-
-            }
-        });
+//
+//            }
+//        });
     }
 
     private void initYxSDK() {
@@ -467,11 +472,34 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
                     }
                 });
         vp2Content = findViewById(R.id.vp2_content);
+        DeviceManager.INSTANCE.getDeviceInterface().registerScanQRCodeListener(new OnScanQRCodeListener() {
+            @Override
+            public void onScanQrCode(String data) {
+                Log.d(TAG, "limedispatchKeyEvent==================474: " + data);
+                if (flScreenWelcom.getVisibility() == View.VISIBLE || fl_screen_success.getVisibility() == View.VISIBLE){
+                     ToastUtils.toastMsgWarning("请先绑定餐盘");
+                     onTTSSpeakEvent(new TTSSpeakEvent("请先绑定餐盘"));
+                }else {
+                    plateBinding(data);
+                }
+            }
+
+            @Override
+            public void onScanQRCodeError(String message) {
+
+            }
+        });
     }
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        LogHelper.print("---MainActivity--dispatchKeyEvent--activity event: " + event);
+        LogHelper.print("---MainActivity--dispatchKeyEvent--activity event: " + event.getKeyCode());
+
+        if (event.getAction() == KeyEvent.ACTION_UP){
+            Log.d(TAG, "limedispatchKeyEvent: " + event.getKeyCode());
+        }
+
+
         if (isSoftKeyboardShow && DeviceManager.INSTANCE.getDeviceInterface().isFinishDispatchKeyEvent()) {
             return super.dispatchKeyEvent(event);
         }
@@ -484,6 +512,7 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
                     scanHolderView.requestFocus();
                 }
             }
+
             DeviceManager.INSTANCE.getDeviceInterface().dispatchKeyEvent(event);
             return true;
         }
@@ -714,6 +743,9 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
     protected void onDestroy() {
         AppManager.INSTANCE.clearMainActivity();
         EventBus.getDefault().unregister(this);
+        if (canSpeakFacePassFailObserver != null){
+            canSpeakFacePassFailObserver.dispose();
+        }
         super.onDestroy();
     }
 
@@ -983,10 +1015,24 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
                                 fl_screen_success.setVisibility(View.VISIBLE);
                                 tv_tips.setText("餐盘码:  " + MainApplication.barcode);
                                 tv_user_name.setText("用户姓名：" + baseNetResponse.getData().getCustomerInfo().getName());
-                                tv_user_balance.setText("餐卡余额：" + PriceUtils.formatPrice(baseNetResponse.getData().getCustomerInfo().getBalance().getAmount()) + "元");
+                                tv_user_balance.setText("餐卡余额：" + PriceUtils.formatPrice(baseNetResponse.getData().getAmount().getAmount()) + "元");
+
                             }else {
                                 ToastUtils.toastMsgError(TextUtils.isEmpty(baseNetResponse.getMsg()) ? baseNetResponse.getMessage() : baseNetResponse.getMsg());
-                                EventBus.getDefault().post(new TTSSpeakEvent(TextUtils.isEmpty(baseNetResponse.getMsg()) ? baseNetResponse.getMessage() : baseNetResponse.getMsg()));
+                                onTTSSpeakEvent(new TTSSpeakEvent(TextUtils.isEmpty(baseNetResponse.getMsg()) ? baseNetResponse.getMessage() : baseNetResponse.getMsg()));
+                                //flScreenWelcom.setVisibility(View.VISIBLE);
+
+
+                                canSpeakFacePassFailObserver = new DefaultDisposeObserver<Long>() {
+                                    @Override
+                                    protected void onSuccess(Long aLong) {
+                                        canSpeakFacePassFailObserver = null;
+                                        EventBus.getDefault().post(new FacePassRetryEvent());
+                                    }
+                                };
+                                //1秒之后重置
+                                Observable.timer(3, TimeUnit.SECONDS).compose(RxTransformerUtils.mainSchedulers()).to(AutoDisposeUtils.onDestroyDispose(MainActivity.this)).subscribe(canSpeakFacePassFailObserver);
+
                             }
                         }catch (Exception e){
                             Log.e(TAG, "limeplateBinding 342: " +  e.getMessage());

@@ -157,14 +157,15 @@ public abstract class BasePayHelperFragment extends IdentityVerificationFragment
     @Override
     protected void handleReadICCardSuccess(String cardNumber) {
         //读卡成功(无人脸信息)
-        boolean switchConsumerConfirm = PaymentSettingMMKV.getSwitchConsumerConfirm();
-        if (switchConsumerConfirm) {
-            speakTTSVoice("读卡成功,请确认支付");
-            ConsumerManager.INSTANCE.setConsumerConfirmCardInfo(cardNumber, true);
-        } else {
-            speakTTSVoice("读卡成功,支付中");
-            ConsumerManager.INSTANCE.setConsumerConfirmCardInfo(cardNumber, false);
-        }
+//        boolean switchConsumerConfirm = PaymentSettingMMKV.getSwitchConsumerConfirm();
+//        if (switchConsumerConfirm) {
+//            speakTTSVoice("读卡成功,请确认支付");
+//            ConsumerManager.INSTANCE.setConsumerConfirmCardInfo(cardNumber, true);
+//        } else {
+//            speakTTSVoice("读卡成功,支付中");
+//            ConsumerManager.INSTANCE.setConsumerConfirmCardInfo(cardNumber, false);
+//        }
+        ConsumerManager.INSTANCE.setConsumerConfirmCardInfo(cardNumber, false);
         LogHelper.print("--BasePayHelperFragment--handleReadICCardSuccess confirmCardInfo");
     }
 
@@ -184,7 +185,7 @@ public abstract class BasePayHelperFragment extends IdentityVerificationFragment
 //            speakTTSVoice("扫码成功,请确认支付");
 //            ConsumerManager.INSTANCE.setConsumerConfirmScanInfo(qrcodeResult, true);
 //        } else {
-        speakTTSVoice("扫码成功,支付中");
+//        speakTTSVoice("扫码成功,支付中");
         ConsumerManager.INSTANCE.setConsumerConfirmScanInfo(qrcodeResult, false);
 //        }
         LogHelper.print("--BasePayHelperFragment--handleScanQRCodeSuccess qrcodeResult: " + qrcodeResult);

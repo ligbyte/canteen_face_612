@@ -5,6 +5,7 @@ import android.content.Context;
 import android.hardware.usb.UsbDevice;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 
 import com.stkj.common.log.LogHelper;
@@ -404,13 +405,13 @@ public class DeviceImpl extends DeviceInterface implements ScanKeyManager.OnScan
 
     @Override
     public boolean isCanDispatchKeyEvent() {
-        UsbDevice usbDevice = keyBoardScanGunDeviceInfo.getUsbDevice();
-        if (usbDevice != null) {
-            LogHelper.print("--dispatchKeyEvent--isCanDispatchKeyEvent true");
-            return true;
-        }
-        LogHelper.print("--dispatchKeyEvent--isCanDispatchKeyEvent false");
-        return false;
+//        UsbDevice usbDevice = keyBoardScanGunDeviceInfo.getUsbDevice();
+//        if (usbDevice != null) {
+//            LogHelper.print("--dispatchKeyEvent--isCanDispatchKeyEvent true");
+//            return true;
+//        }
+//        LogHelper.print("--dispatchKeyEvent--isCanDispatchKeyEvent false");
+        return true;
     }
 
     @Override
