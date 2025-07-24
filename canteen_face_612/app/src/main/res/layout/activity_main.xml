@@ -88,7 +88,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@mipmap/main_background"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -130,6 +130,7 @@
                     android:layout_height="@dimen/dp_50"
                     android:layout_marginLeft="@dimen/dp_10"
                     android:layout_centerVertical="true"
+                    android:scaleType="centerCrop"
                     android:src="@mipmap/icon_welcome_consumer"
                     android:layout_marginTop="@dimen/dp_15"/>
                 <LinearLayout

@@ -14,6 +14,7 @@ import android.hardware.usb.UsbDevice;
 import android.icu.util.Calendar;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -23,6 +24,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -74,8 +76,10 @@ import com.stkj.cbgfacepass.CBGFacePassHandlerHelper;
 import com.stkj.cbgfacepass.data.CBGFacePassConfigMMKV;
 import com.stkj.cbgfacepass.model.CBGFacePassConfig;
 import com.stkj.cbgfacepass.permission.CBGPermissionRequest;
+import com.stkj.common.camera.SimpleCameraXFragment;
 import com.stkj.common.core.AppManager;
 import com.stkj.common.core.CountDownHelper;
+import com.stkj.common.glide.GlideApp;
 import com.stkj.common.log.LogHelper;
 import com.stkj.common.net.retrofit.RetrofitManager;
 import com.stkj.common.permissions.callback.PermissionCallback;
@@ -127,6 +131,8 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
     private TextView tv_tips;
     private TextView tv_user_name;
     private TextView tv_user_balance;
+    private TextView tv_back_home;
+    private ImageView iv_icon;
     private HomeTabPageAdapter homeTabPageAdapter;
     private static BindingHomeTitleLayout htlConsumer;
     //是否需要重新恢复消费者页面
@@ -137,6 +143,7 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
     private int saveStateCurrentTabPage;
     private long lastBackClickTime = 0;
     private CBGCameraHelper cbgCameraHelper;
+    private CountDownTimer countDownTimer;
     private YxDeviceSDK yxDeviceSDK;
     private YxDevicePortCtrl yxDevicePortCtrl;
     private String currentTrayNo;
@@ -387,8 +394,25 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
         flScreenWelcom = findViewById(R.id.fl_screen_welcom);
         fl_screen_success = findViewById(R.id.fl_screen_success);
         tv_tips = findViewById(R.id.tv_tips);
+        tv_back_home = findViewById(R.id.tv_back_home);
         tv_user_name = findViewById(R.id.tv_user_name);
         tv_user_balance = findViewById(R.id.tv_user_balance);
+        iv_icon = findViewById(R.id.iv_icon);
+        tv_back_home.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                countDownTimer.cancel();
+                flScreenWelcom.setVisibility(View.VISIBLE);
+                fl_screen_success.setVisibility(View.GONE);
+                tv_back_home.setText("返回首页(3s)");
+                flScreenWelcom.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        openYxDeviceSDK();
+                    }
+                },1 * 1000);
+            }
+        });
 //        flScreenProtect.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -1013,10 +1037,18 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
                             if (baseNetResponse.isSuccess() && baseNetResponse.getData() != null && baseNetResponse.getData().getCustomerInfo() != null) {
                                 flScreenWelcom.setVisibility(View.GONE);
                                 fl_screen_success.setVisibility(View.VISIBLE);
+                                if (TextUtils.isEmpty(baseNetResponse.getData().getCustomerInfo().getFaceImg())){
+                                    iv_icon.setImageResource(R.mipmap.icon_welcome_consumer);
+                                }else {
+                                    GlideApp.with(MainActivity.this).load(baseNetResponse.getData().getCustomerInfo().getFaceImg()).into(iv_icon);
+                                }
                                 tv_tips.setText("餐盘码:  " + MainApplication.barcode);
                                 tv_user_name.setText("用户姓名：" + baseNetResponse.getData().getCustomerInfo().getName());
                                 tv_user_balance.setText("餐卡余额：" + PriceUtils.formatPrice(baseNetResponse.getData().getAmount().getAmount()) + "元");
                                 onTTSSpeakEvent(new TTSSpeakEvent("绑定成功，欢迎就餐"));
+
+                                startVerificationCountdown();
+
                             }else {
                                 ToastUtils.toastMsgError(TextUtils.isEmpty(baseNetResponse.getMsg()) ? baseNetResponse.getMessage() : baseNetResponse.getMsg());
                                 onTTSSpeakEvent(new TTSSpeakEvent(TextUtils.isEmpty(baseNetResponse.getMsg()) ? baseNetResponse.getMessage() : baseNetResponse.getMsg()));
@@ -1046,5 +1078,29 @@ public class MainActivity extends BaseActivity implements AppNetCallback, Consum
                         Log.e(TAG, "limeplateBinding: " +  e.getMessage());
                     }
                 });
+    }
+
+
+    private void startVerificationCountdown() {
+
+        countDownTimer = new CountDownTimer(3000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                tv_back_home.setText("返回首页(" +  (millisUntilFinished / 1000)  + "s)");
+            }
+
+            @Override
+            public void onFinish() {
+                flScreenWelcom.setVisibility(View.VISIBLE);
+                fl_screen_success.setVisibility(View.GONE);
+                flScreenWelcom.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        openYxDeviceSDK();
+                    }
+                },1 * 1000);
+            }
+
+        }.start();
     }
 }
