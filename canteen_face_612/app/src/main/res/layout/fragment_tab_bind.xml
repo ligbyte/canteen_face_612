@@ -38,7 +38,7 @@
                 android:orientation="vertical">
 
                 <!-- 人脸取景框 -->
-                <com.stkj.cashier.base.ui.widget.FacePassCameraLayout
+                <com.stkj.platebind.base.ui.widget.FacePassCameraLayout
                     android:id="@+id/fpc_face"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -34,7 +34,7 @@ println("--gitSha--" + gitSha)
 def buildDate = new Date().format("yyyy-MM-dd HH:mm", TimeZone.getTimeZone("GMT+08:00"))
 
 android {
-    namespace 'com.stkj.cashier'
+    namespace 'com.stkj.platebind'
     compileSdk rootProject.compileSdkVersion
 
     defaultConfig {
@@ -47,7 +47,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         ndk {
-            abiFilters "armeabi-v7a"
+            abiFilters "arm64-v8a"
         }
         buildConfigField "String", "GIT_SHA", "\"" + gitSha + "\""
         buildConfigField "String", "BUILD_TIME", "\"" + buildDate + "\""

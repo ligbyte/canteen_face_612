@@ -19,8 +19,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
--keep class com.stkj.cashier.model.**{*;}
--keep class com.stkj.cashier.base.model.**{*;}
--keep class com.stkj.cashier.home.model.**{*;}
--keep class com.stkj.cashier.setting.model.**{*;}
+-keep class com.stkj.platebind.model.**{*;}
+-keep class com.stkj.platebind.base.model.**{*;}
+-keep class com.stkj.platebind.home.model.**{*;}
+-keep class com.stkj.platebind.setting.model.**{*;}
 -keep class * extends com.stkj.common.core.ActivityWeakRefHolder{*;}

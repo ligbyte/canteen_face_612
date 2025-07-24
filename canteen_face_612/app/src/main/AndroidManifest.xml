@@ -49,7 +49,7 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.stkj.cashier.home.ui.activity.MainActivity$MinuteReceiver" />
+        <receiver android:name="com.stkj.platebind.home.ui.activity.MainActivity$MinuteReceiver" />
     </application>
 
 </manifest>
